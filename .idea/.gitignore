@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+/cyk.html/
+/cykcss.css/
+/cykjavascript.js/
+
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
