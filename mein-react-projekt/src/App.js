@@ -7,15 +7,17 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload the page.
+          Edit <code>src/App.js</code> and save to reload the page. No F5 needed?
+
         </p>
+        <p>  Or enjoy the Webapp with plain Javascript</p>
         <a
-          className="App-link"
-          href="https://reactjs.org"
+          className="Hennings App-link"
+          href="https://www.linkedin.com/feed/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React or do it without
+          Linked it LUl
         </a>
       </header>
     </div>
