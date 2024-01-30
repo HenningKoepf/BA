@@ -7,10 +7,8 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
     Connection,
-
     EdgeTypes,
     Node, MarkerType
-
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './styles/styles.css'
@@ -19,11 +17,17 @@ import './updatenode.css';
 import NodeContextMenu from './components/NodeContextMenu';
 import { initialNodes, initialEdges } from './elements/initial-setup';
 
+import Inputform from './components/Inputform';
+
 
 import { data } from "./data/data";
 import ButtonEdge from './elements/ButtonEdge';
 
 import NewNodeButton from './buttonfunctions';
+
+const edgeTypes = {
+    buttonedge: ButtonEdge,
+};
 
 
 function App() {
@@ -35,14 +39,15 @@ function App() {
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
- 
-
+  
 
   const onConnect = useCallback(
-      (params) => setEdges((eds) => addEdge(params, eds)),
-      [setEdges],
-  );
+      (params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+
+  
+ 
+
+//Kontextmenü der Knoten
 
     const onNodeContextMenu = useCallback(
         (event, node) => {
@@ -67,8 +72,11 @@ function App() {
 
 
   return (
+      <>
+              <div className="toptext" >Hier Kommt das Titelbild hin! </div>
+
       <div className="App"
-          style={{ width: '100vw', height: '60vh' }}>
+          style={{ width: '100vw', height: '100vh' }}>
 
 
         <ReactFlow
@@ -81,8 +89,8 @@ function App() {
             onConnect={onConnect}
             edgeTypes={edgeTypes}
             onNodeContextMenu = {onNodeContextMenu}
-            //onContextMenu = {onNodeContextMenu}
-            fitView
+
+            fitView //Für den automatischen Fullscreen
         >
           <Controls />
           <MiniMap />
@@ -90,14 +98,13 @@ function App() {
             {menu && <NodeContextMenu onClick={onPaneClick} {...menu} />}
         </ReactFlow>
 
+
       </div>
+      </>
   );
 }
 export default App;
 
 
-    const edgeTypes = {
-        buttonedge: ButtonEdge,
-    };
 
 

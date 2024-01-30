@@ -2,16 +2,7 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 15vmin;
-  pointer-events: none;
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 15s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
@@ -24,9 +15,6 @@
   color: lightblue;
 }
 
-.App-link {
-  color: #61dafb;
-}
 
 @keyframes App-logo-spin {
   from {
@@ -37,6 +25,6 @@
   }
 }
 .react-flow-container {
-  width: 100%;
+  width: 90%;
   height: 500px;
 }
