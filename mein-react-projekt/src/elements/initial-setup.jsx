@@ -46,7 +46,7 @@ export const initialEdges: Edge[] = [
         id: 'edge-1-2',
         source: 'button-1',
         target: 'button-2',
-        type: 'buttonedge',
+       
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {

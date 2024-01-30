@@ -1,5 +1,6 @@
-import React, { useCallback } from 'react';
+import React, {useCallback, useState} from 'react';
 import { useReactFlow } from 'reactflow';
+import Inputform from './Inputform';
 
 export default function NodeContextMenu({
   id,
@@ -20,10 +21,38 @@ export default function NodeContextMenu({
     addNodes({ ...node, id: `${node.id}-copy`, position });
   }, [id, getNode, addNodes]);
 
+
+
   const deleteNode = useCallback(() => {
     setNodes((nodes) => nodes.filter((node) => node.id !== id));
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
   }, [id, setNodes, setEdges]);
+
+
+  const renameNode = useCallback(() => {
+    /*
+    TODO Inputform statt window.promt
+*/
+    const newLabel = window.prompt("Geben Sie den neuen Namen für den Knoten ein:", "");
+
+    if (newLabel !== null) {
+      setNodes((nodes) =>
+          nodes.map((node) => {
+            if (node.id === id) {
+              // Aktualisieren Sie das Label des gewünschten Knotens
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  label: newLabel,
+                },
+              };
+            }
+            return node;
+          })
+      );
+    }
+  }, [id, setNodes]);
 
   return (
     <div
@@ -34,8 +63,10 @@ export default function NodeContextMenu({
       <p style={{ margin: '0.5em' }}>
         <small>node: {id}</small>
       </p>
-      <button onClick={duplicateNode}>duplicate</button>
-      <button onClick={deleteNode}>delete</button>
+      <button onClick={duplicateNode}>Knoten verdoppeln </button>
+      <button onClick={deleteNode}>Knoten Löschen</button>
+      <button onClick ={renameNode}>Umbenennen</button>
+
     </div>
   );
 }
