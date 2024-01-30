@@ -57,7 +57,7 @@ function App() {
       (params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
  */
 
-    //Verbindung zischen Knoten zu ziehen
+    //Kante umbenennen und löschen
     const onEdgeContextMenu = useCallback((event,edge) => {
         // Kein normales Kontextmenü
         event.preventDefault();
@@ -75,6 +75,7 @@ function App() {
         [setEdgeMenu],
     );
 
+// Zwei Knoten werden per Drag and Drop verbunden
     const onConnect = useCallback(
         (params) => {
 

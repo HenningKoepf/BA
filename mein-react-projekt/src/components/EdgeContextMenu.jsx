@@ -31,9 +31,7 @@ export default function EdgeContextMenu({
                     if (edge.id === id) { // Vergleich mit welcher ID?
                         return {
                             ...edge,
-                            
                                 label: newLabel,
-
                         };
                     }
                     return edge;
@@ -52,7 +50,7 @@ export default function EdgeContextMenu({
             {...props}
         >
             <p style={{ margin: '0.5em' }}>
-                <small>node: {id}</small>
+                <small>Edge: {id}</small>
             </p>
 
             <button onClick ={deleteEdge}>Kante Löschen</button>
