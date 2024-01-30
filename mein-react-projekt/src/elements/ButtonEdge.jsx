@@ -14,7 +14,7 @@ const onEdgeClick = (evt, id) => {
     alert(`remove ${id}`);
 };
 
-export default function CustomEdge({
+export default function ButtonEdge({
                                        id,
                                        sourceX,
                                        sourceY,
@@ -38,6 +38,8 @@ export default function CustomEdge({
     const onEdgeClick = () => {
         setEdges((edges) => edges.filter((edge) => edge.id !== id));
     };
+
+    
 
     return (
         <>

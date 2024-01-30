@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -7,38 +7,36 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
     Connection,
-    Edge,
+
     EdgeTypes,
     Node, MarkerType
 
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import './styles/styles.css'
 import './updatenode.css';
-import MenuContext from "./components/MenuContext";
-import CustomEdge from "./elements/Edge";
+
+import NodeContextMenu from './components/NodeContextMenu';
+import { initialNodes, initialEdges } from './elements/initial-setup';
+
 
 import { data } from "./data/data";
-//import ButtonEdge from './ButtonEdge';
+import ButtonEdge from './elements/ButtonEdge';
 
 import NewNodeButton from './buttonfunctions';
 
-const initialNodes : Node[] = [
-  { id: '1', position: { x: 0, y: 0 }, data: { label: '1'} },
-  { id: '2', position: { x: 30, y: 75 }, data: { label: '2' } },
-  { id: '3', position: { x: 150, y: 150 }, data: { label: '3' } },
-];
-
-const initialEdges: CustomEdge[] = [{ id: 'e1-2', source: '1', target: '2' , type: 'buttonedge'},
-    { id: 'e2-3', source: '2', target: '3' ,label: 'a'}];
-
-
-
 
 function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+
+
+    const [menu, setMenu] = useState(null);
+    const ref = useRef(null);
+    const onPaneClick = useCallback(() => setMenu(null), [setMenu]);
+
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  //const onNodeContextMenu = useCallback((params) = > )
+ 
 
 
   const onConnect = useCallback(
@@ -46,28 +44,60 @@ function App() {
       [setEdges],
   );
 
+    const onNodeContextMenu = useCallback(
+        (event, node) => {
+            // Kein normales Kontextmenü
+            event.preventDefault();
+
+            // Sicherstellen, dass das Menü nicht neben dem Fenster gerendert wrid
+            const pane = ref.current.getBoundingClientRect();
+            setMenu({
+                id: node.id,
+                top: event.clientY < pane.height - 200 && event.clientY,
+                left: event.clientX < pane.width - 200 && event.clientX,
+                right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
+                bottom:
+                    event.clientY >= pane.height - 200 && pane.height - event.clientY,
+            });
+        },
+        [setMenu],
+    );
+
+
+
+
   return (
       <div className="App"
           style={{ width: '100vw', height: '60vh' }}>
 
 
-            <MenuContext data={data} />
-       
-
         <ReactFlow
+            ref={ref}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
+            onPaneClick={onPaneClick}
             onConnect={onConnect}
-            //onNodeContextMenu = {onNodeContextMenu}
+            edgeTypes={edgeTypes}
+            onNodeContextMenu = {onNodeContextMenu}
+            //onContextMenu = {onNodeContextMenu}
+            fitView
         >
           <Controls />
           <MiniMap />
           <Background variant="dots" gap={15} size={1} />
+            {menu && <NodeContextMenu onClick={onPaneClick} {...menu} />}
         </ReactFlow>
-        <NewNodeButton/>
+
       </div>
   );
 }
 export default App;
+
+
+    const edgeTypes = {
+        buttonedge: ButtonEdge,
+    };
+
+
