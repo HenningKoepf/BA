@@ -9,6 +9,7 @@ export const initialNodes: Node[] = [
     {
         id: 'button-1',
         type: 'input',
+        style: {backgroundColor: '#1ec212'},
         data: { label: 'Input' },
         position: { x: 100, y: 50 },
         sourcePosition: 'right',
@@ -35,11 +36,12 @@ export const initialNodes: Node[] = [
         sourcePosition: 'right',
     },
     {
-        id: 'button-5',
-        data: { label: 'Button Edge 5' },
+        id: 'Endzustand',
+        data: { label: 'Z8, Ende' },
+        style: {backgroundColor: '#560ca4'},
         position: { x: 500, y: 150 },
         targetPosition: 'left',
-        sourcePosition: 'right',
+        type: 'output',
     },
 ];
 

@@ -40,6 +40,7 @@ function App() {
 
     const [edgemenu, setEdgeMenu] = useState(null);
     const [menu, setMenu] = useState(null);
+    const [nodeBg, setNodeBg] = useState('#eee');
 
     const ref = useRef(null);
 
