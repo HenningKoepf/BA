@@ -28,6 +28,16 @@ export default function NodeContextMenu({
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
   }, [id, setNodes, setEdges]);
 
+  const colorNode = useCallback(() => {
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === id){
+          return {...node,  style: {backgroundColor: '#1ec212'},}
+        }
+      return node;
+      })
+     );
+  }, [id, setNodes]);
 
   const renameNode = useCallback(() => {
     /*
@@ -66,6 +76,7 @@ export default function NodeContextMenu({
       <button onClick={duplicateNode}>Knoten verdoppeln </button>
       <button onClick={deleteNode}>Knoten Löschen</button>
       <button onClick ={renameNode}>Umbenennen</button>
+      <button onClick={colorNode}>Einfärben</button>
 
     </div>
   );
