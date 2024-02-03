@@ -39,7 +39,6 @@ export default function ButtonEdge({
         setEdges((edges) => edges.filter((edge) => edge.id !== id));
     };
 
-    
 
     return (
         <>

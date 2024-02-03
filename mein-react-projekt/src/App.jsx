@@ -6,8 +6,10 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
+    BaseEdge,
     Connection,
-    EdgeTypes,
+    ConnectionMode,
+
     Node, MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -16,6 +18,7 @@ import './updatenode.css';
 
 import NodeContextMenu from './components/NodeContextMenu';
 import EdgeContextMenu from './components/EdgeContextMenu';
+import SelfConnectingEdge from './elements/SelfConnectingEdge';
 import { initialNodes, initialEdges } from './elements/initial-setup';
 
 import Inputform from './components/Inputform';
@@ -26,14 +29,11 @@ import { data } from "./data/data";
 import ButtonEdge from './elements/ButtonEdge';
 import NewNodeButton from './buttonfunctions';
 
-const edgeTypes = {
+const EdgeTypes = {
     buttonedge: ButtonEdge,
+    selfconnecting: SelfConnectingEdge,
+
 };
-
-
-
-
-
 
 
 function App() {
@@ -51,11 +51,11 @@ function App() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   
-/*
 
+/*
   const onConnect = useCallback(
       (params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
- */
+*/
 
     //Kante umbenennen und löschen
     const onEdgeContextMenu = useCallback((event,edge) => {
@@ -75,28 +75,39 @@ function App() {
         [setEdgeMenu],
     );
 
-// Zwei Knoten werden per Drag and Drop verbunden
     const onConnect = useCallback(
         (params) => {
+            if ( params.source == params.target){
+                const newEdge = {
+                    id: `edge-${params.source}-${params.target}`,
+                    source: params.source,
+                    target: params.target,
+                    label: "selfc", // Fügen Sie das Label dem Edge-Objekt hinzu
+                    type: "selfconnecting",
+                    markerEnd: { type: MarkerType.ArrowClosed },
+                };
+                setEdges((edges) => [...edges, newEdge]);
+            }
+            else{
 
-            const label = "default";
+                const newEdge = {
+                    id: `edge-${params.source}-${params.target}`,
+                    source: params.source,
+                    target: params.target,
+                    label: "a", // Fügen Sie das Label dem Edge-Objekt hinzu
+                    type: "default",
+                    markerEnd: { type: MarkerType.ArrowClosed },
+                };
 
-            // Erstelle das Edge-Objekt mit dem Label
-            const newEdge = {
-                id: `edge-${params.source}-${params.target}`,
-                source: params.source,
-                target: params.target,
-                label: "a", // Fügen Sie das Label dem Edge-Objekt hinzu
-                type: "standard",
-                markerEnd: { type: MarkerType.ArrowClosed },
-            };
+                // Erstelle das Edge-Objekt mit dem Label
 
-            // Aktualisiere die Edge-Liste
-            setEdges((edges) => [...edges, newEdge]);
-        },
+                // Aktualisiere die Edge-Liste
+                setEdges((edges) => [...edges, newEdge]);
+             }
+            },
+// Zwei Knoten werden per Drag and Drop verbunden
         [setEdges]
     );
- 
 
 //Kontextmenü der Knoten
 
@@ -120,8 +131,6 @@ function App() {
     );
 
 
-
-
              // <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
   return (
       <>
@@ -135,7 +144,7 @@ function App() {
             onEdgesChange={onEdgesChange}
             onPaneClick={onPaneClick}
             onConnect={onConnect}
-            edgeTypes={edgeTypes}
+            edgeTypes={EdgeTypes}
             //nodeTypes={nodeTypes}
             onNodeContextMenu = {onNodeContextMenu}
             onEdgeContextMenu = {onEdgeContextMenu}
