@@ -260,9 +260,7 @@ function App() {
               <div className="DFAContainer">
                   <button onClick={checkIsDFA}>Ist das ein DFA?</button>
                   <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
-                      {isDfaResult !== null && (
-                          <div>{isDfaResult ? 'Ja' : 'Nein'}</div>
-                      )}
+                         {isDfaResult !== null && (<div>{isDfaResult ? 'Ja' : 'Nein'}</div>)}
                   </div>
               </div>
           </div>
@@ -281,7 +279,7 @@ function App() {
             fitView //Für den automatischen Fullscreen
         >
           <Controls />
-          <MiniMap />
+          <MiniMap pannable />
           <Background variant="dots" gap={15} size={1} />
             {menu && <NodeContextMenu onClick={onPaneClick} {...menu} />}
             {edgemenu && <EdgeContextMenu onClick={onPaneClick} {...edgemenu} />}

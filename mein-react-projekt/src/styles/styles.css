@@ -34,7 +34,7 @@
 }
 .react-flow{
   height: 80vh !important;
-  width: 70%;
+  width: 50%;
 }
 
 .node {
@@ -43,6 +43,9 @@
   border-radius: 10%;
 
 }
+.react-flow__panel.react-flow__attribution.bottom.right {
+  display: none;
+}
 
 .toptext {
   font-size: 32px;
@@ -50,31 +53,44 @@
   text-align: center;
 }
 
+.Kontrollcontainer{
+  border: black solid;
+  height: 80vh;
+}
+.Kontrollcontainer {
+  display: flex; /* Aktiviert Flexbox-Layout */
+  flex-direction: column; /* Anordnung der Inhalte in Spalten */
+  align-items: flex-start; /* Horizontale Ausrichtung */
+  justify-content: flex-start; /* Vertikale Ausrichtung */
+}
+
+
 .DFAContainer {
   display: flex;
   align-items: center; /* Zentriert die Inhalte vertikal */
 }
 
 .DFAAnzeige {
-  padding: 5px;
+  /* Abstand zum rechten Rand */
+  display: flow-root;
+  height: 20px;
+  width: 30px;
+  padding: 7px;
   border: 1px solid #000;
-  border-radius: 40px;
   font-weight: bold;
   font-family: "Apple Braille", serif;
-
 }
 
 /* Stil für True */
 .DFAAnzeige.true {
-
   color: green;
 }
 
 /* Stil für False */
 .DFAAnzeige.false {
-
   color: red;
 }
+
 
 .wrapper {
   display: grid;
