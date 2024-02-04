@@ -44,6 +44,33 @@
   font-family: "Apple Braille";
   text-align: center;
 }
+
+.DFAContainer {
+  display: flex;
+  align-items: center; /* Zentriert die Inhalte vertikal */
+}
+
+.DFAAnzeige {
+  padding: 5px;
+  border: 1px solid #000;
+  border-radius: 40px;
+  font-weight: bold;
+  font-family: "Apple Braille";
+
+}
+
+/* Stil für True */
+.DFAAnzeige.true {
+
+  color: green;
+}
+
+/* Stil für False */
+.DFAAnzeige.false {
+
+  color: red;
+}
+
 .wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

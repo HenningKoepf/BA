@@ -38,7 +38,7 @@ export const initialNodes: Node[] = [
     {
         id: 'Endzustand',
         data: {label: 'Z8, Ende' },
-        style: {backgroundColor: '#560ca4'},
+        style: {backgroundColor: '#9c12c2'},
         position: { x: 500, y: 150 },
         targetPosition: 'left',
         type: 'output',

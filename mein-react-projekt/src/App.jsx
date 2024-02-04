@@ -42,8 +42,14 @@ function App() {
     const [menu, setMenu] = useState(null);
     const [nodeBg, setNodeBg] = useState('#eee');
 
-    const ref = useRef(null);
+    //Startalphabet default noch durch Textbox zu setzen
+    const alphabet = ['a', 'b','c'];
 
+    const ref = useRef(null);
+    /**
+     * Beim Klick auf das Canvas sollen alle Menüs geschlossen werden
+     * @type {(function(): void)|*}
+     */
     const onPaneClick = useCallback(() => {
         setMenu(null); // Set das Menu zurück
         setEdgeMenu(null); // Setz das edgeMenu zurück
@@ -51,14 +57,13 @@ function App() {
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    const [isDfaResult, setIsDfaResult, onChange] = useState(false);
+    const [isDfaResult, setIsDfaResult, onChange] = useState(null);
 
 
-
-    /*
-      const onConnect = useCallback(
-          (params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
-    */
+    /**
+     * Erzeugt das Kontextmenü für Kanten
+     * @type {(function(*, *): void)|*}
+     */
 
     //Kante umbenennen und löschen
     const onEdgeContextMenu = useCallback((event,edge) => {
@@ -78,6 +83,12 @@ function App() {
         [setEdgeMenu],
     );
 
+    /**
+     * Erzeugen einer Kante, wenn von einer Source Handle per DragnDrop zu einer TargetHandle gezogen wurde
+     * Erzeugt
+     * @type {(function(*): void)|*}
+     */
+
     const onConnect = useCallback(
         (params) => {
             if ( params.source == params.target){
@@ -85,7 +96,7 @@ function App() {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
                     target: params.target,
-                    label: "selfc", // Fügen Sie das Label dem Edge-Objekt hinzu
+                    label: "self", // Fügen Sie das Label dem Edge-Objekt hinzu
                     type: "selfconnecting",
                     markerEnd: { type: MarkerType.ArrowClosed },
                 };
@@ -111,7 +122,10 @@ function App() {
 // Zwei Knoten werden per Drag and Drop verbunden
         [setEdges]
     );
-
+    /**
+     * Öffnet das Kontextmenü der Knoten
+     * @type {(function(*, *): void)|*}
+     */
 //Kontextmenü der Knoten
 
     const onNodeContextMenu = useCallback(
@@ -133,20 +147,42 @@ function App() {
         [setMenu],
     );
 
-    const alphabet = ['a', 'b'];
+    /**
+     * Der Klick auf den Prüfbutton erzeugt eine Prüfinstanz und setzt den Wert, so das neu gerendert wird
+     */
 
     const checkIsDFA = () => {
+        setIsDfaResult((prev) => null);
         const result = isDFA(nodes, edges, alphabet);
         setIsDfaResult(result);
-        alert(`Ist das ein DFA? ${result ? 'Ja, es ist ein DFA.' : 'Nein, es ist kein DFA.'}`);
+
     };
-    //überprüfen ob der Graph ein DFA ist
+
+    /**
+     * Genau ein Startzustand: Es wird sichergestellt, dass genau ein Startzustand vorhanden ist.
+     * Validität der Kantenlabels: Es wird überprüft, ob alle Kantenlabels gültige Symbole des Alphabets enthalten.
+     * Eindeutigkeit der Übergänge: Für jedes Symbol in jedem Zustand darf es höchstens einen Übergang geben.
+     * Erreichbarkeit aller Zustände: Alle Zustände müssen vom Startzustand aus erreichbar sein.
+     * @param nodes
+     * @param edges
+     * @param alphabet
+     * @returns {boolean}
+     */
 
     function isDFA(nodes, edges, alphabet) {
         if (!nodes || !edges || !alphabet) {
             console.error('Einer der Inputs (nodes, edges, alphabet) ist undefined.');
             return false;
         }
+
+        // Gibt es genau einen Startzustand
+        const startStates = nodes.filter(node => node.type === 'input');
+        if (startStates.length !== 1) {
+            console.error("Es muss genau einen Startzustand geben.");
+            alert("Startzustand ist nicht eindeutig");
+            return false;
+        }
+        const startStateId = startStates[0].id; //Breitensuche aufsetzpunkt
         const transitions = new Map();
 
         // Initialisieren der Transitions Map mit leeren Sets
@@ -159,11 +195,16 @@ function App() {
 
         // Verarbeiten der Kanten und Überprüfen der Symbole gegen das Alphabet
         for (const edge of edges) {
-            const symbols = edge.label.split(',').map(symbol => symbol.trim()); // Unterstützt mehrere Symbole pro Kante
+            const symbols = edge.label.split(/[,;\s]\s*/).map(symbol => symbol.trim());
+                /*
+                Ünterstützt mehrere Symbole pro Kante, Trennung mit , oder ; oder Leerzeichen möglich
+                 */
+
             for (const symbol of symbols) {
                 if (!alphabet.includes(symbol)) {
                     // Symbol nicht im Alphabet, daher kein gültiger DFA
                     console.error(`Ungültiges Symbol '${symbol}' in Kante '${edge.id}' gefunden.`);
+                    alert(`Es ist kein DFA. Ungültiges Symbol '${symbol}' in Kante '${edge.id}' gefunden.`);
                     return false;
                 }
                 const key = `${edge.source}-${symbol}`;
@@ -179,19 +220,39 @@ function App() {
         // Überprüfen, ob es für jedes Symbol in jedem Zustand höchstens einen Übergang gibt
         for (let [key, targetStates] of transitions) {
             if (targetStates.size > 1) {
+                alert(`Es ist kein DFA. Ungültiges Symbol beim Knoten '${key}' `);
                 // Mehr als ein Übergang für ein Symbol in einem Zustand gefunden das wid kein DFA sein
                 return false;
             }
         }
 
+        //Sind alle Zustände vom Startzustand erreichbar
+        let visited = new Set();
+        let queue = [startStateId];
+        while (queue.length > 0) {
+            const currentState = queue.shift();
+            if (!visited.has(currentState)) {
+                visited.add(currentState);
+                edges.forEach(edge => {
+                    if (edge.source === currentState && !visited.has(edge.target)) {
+                        queue.push(edge.target);
+                    }
+                });
+            }
+        }
+
+        if (visited.size !== nodes.length) {
+            alert("Nicht alle Zustände sind erreichbar.");
+            return false;
+        }
         return true; // Der Automat ist ein DFA (wir implizieren Müllzustände))
     }
 
 
 
-    // <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
   return (
       <>
+     <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
       <div className="App"
           style={{ width: '100vw', height: '60vw' }}>
         <ReactFlow
@@ -214,10 +275,15 @@ function App() {
             {menu && <NodeContextMenu onClick={onPaneClick} {...menu} />}
             {edgemenu && <EdgeContextMenu onClick={onPaneClick} {...edgemenu} />}
         </ReactFlow>
-          <button onClick={checkIsDFA}>
-              Ist das ein DFA?
-          {isDfaResult !== null && <span>{isDfaResult ? 'True' : 'False'}</span>}
-          </button>
+
+          <div className="DFAContainer">
+              <button onClick={checkIsDFA}>Ist das ein DFA?</button>
+              <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
+                  {isDfaResult !== null && (
+                      <div>{isDfaResult ? 'Ja' : 'Nein'}</div>
+                  )}
+              </div>
+          </div>
       </div>
           </>
 

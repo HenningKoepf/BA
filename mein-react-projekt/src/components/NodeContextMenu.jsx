@@ -43,7 +43,7 @@ export default function NodeContextMenu({
     setNodes((nodes) =>
         nodes.map((node) => {
           if (node.id === id){
-            return {...node,  style: {backgroundColor: '#2912c2'},type : 'output'}
+            return {...node,  style: {backgroundColor: '#9c12c2'},type : 'output'}
           }
           return node;
         })
