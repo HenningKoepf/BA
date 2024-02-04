@@ -6,7 +6,7 @@ export default function SelfConnecting(props: BaseEdgeProps){
   // we are using the default bezier edge when source and target ids are different
   // wird schon in der App abgefangen.
 
-  const { sourceX, sourceY, targetX, targetY, id, markerEnd, label } = props;
+  const { sourceX, sourceY, targetX, targetY, id, markerEnd, label,style } = props;
   const radiusX = (sourceX - targetX) * 0.6;
   const radiusY = 40;
   const edgePath = `M ${sourceX - 5} ${sourceY} A ${radiusX} ${radiusY} 0 1 0 ${
@@ -14,12 +14,12 @@ export default function SelfConnecting(props: BaseEdgeProps){
   } ${targetY}`;
 
   const labelX = (sourceX + targetX) / 2;
-  const labelY = (sourceY + targetY) / 2 -40; // Etwas oberhalb der Mitte der Kante
+  const labelY = (sourceY + targetY) / 2 - 75; // Etwas oberhalb der Mitte der Kante
 
 
   return(
   <>
-    <BaseEdge path={edgePath} markerEnd={markerEnd} />;
+    <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />;
     <EdgeLabelRenderer>
       <div
           style={{

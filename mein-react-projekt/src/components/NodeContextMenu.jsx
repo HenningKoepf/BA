@@ -28,6 +28,29 @@ export default function NodeContextMenu({
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
   }, [id, setNodes, setEdges]);
 
+  const changeToInputNode = useCallback(() => {
+    setNodes((nodes) =>
+        nodes.map((node) => {
+          if (node.id === id){
+            return {...node,  style: {backgroundColor: '#1ec212'},type : 'input'}
+          }
+          return node;
+        })
+    );
+  }, [id, setNodes]);
+
+  const changeToOutputNode = useCallback(() => {
+    setNodes((nodes) =>
+        nodes.map((node) => {
+          if (node.id === id){
+            return {...node,  style: {backgroundColor: '#2912c2'},type : 'output'}
+          }
+          return node;
+        })
+    );
+  }, [id, setNodes]);
+
+
   const colorNode = useCallback(() => {
     setNodes((nodes) =>
       nodes.map((node) => {
@@ -77,6 +100,8 @@ export default function NodeContextMenu({
       <button onClick={deleteNode}>Knoten Löschen</button>
       <button onClick ={renameNode}>Umbenennen</button>
       <button onClick={colorNode}>Einfärben</button>
+      <button onClick = {changeToInputNode}>Zu Startzustand</button>
+      <button onClick = {changeToOutputNode}>Zu Endzustand</button>
 
     </div>
   );

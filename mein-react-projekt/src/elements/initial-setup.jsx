@@ -37,7 +37,7 @@ export const initialNodes: Node[] = [
     },
     {
         id: 'Endzustand',
-        data: { label: 'Z8, Ende' },
+        data: {label: 'Z8, Ende' },
         style: {backgroundColor: '#560ca4'},
         position: { x: 500, y: 150 },
         targetPosition: 'left',
@@ -51,7 +51,7 @@ export const initialEdges: Edge[] = [
         source: 'button-1',
         target: 'button-2',
 
-        label: 'hih',
+        label: 'a',
        
         markerEnd: { type: MarkerType.ArrowClosed },
     },
@@ -59,23 +59,24 @@ export const initialEdges: Edge[] = [
         id: 'edge-2-3',
         source: 'button-2',
         target: 'button-3',
-        type: 'buttonedge',
+        label: 'a',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
         id: 'edge-3-4',
         source: 'button-3',
         target: 'button-4',
-        type: 'buttonedge',
+        label: 'a',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
         id: 'edge-4-5',
         source: 'button-4',
-        target: 'button-5',
-        type: 'buttonedge',
+        target: 'Endzustand',
+        label: 'b',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
+
     {
         id: 'edge-self',
         label: 'a' ,
