@@ -253,8 +253,19 @@ function App() {
   return (
       <>
      <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
-      <div className="App"
+
+          <div className="App"
           style={{ width: '100vw', height: '60vw' }}>
+              <div className="Kontrollcontainer">
+              <div className="DFAContainer">
+                  <button onClick={checkIsDFA}>Ist das ein DFA?</button>
+                  <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
+                      {isDfaResult !== null && (
+                          <div>{isDfaResult ? 'Ja' : 'Nein'}</div>
+                      )}
+                  </div>
+              </div>
+          </div>
         <ReactFlow
             ref={ref}
             nodes={nodes}
@@ -276,14 +287,6 @@ function App() {
             {edgemenu && <EdgeContextMenu onClick={onPaneClick} {...edgemenu} />}
         </ReactFlow>
 
-          <div className="DFAContainer">
-              <button onClick={checkIsDFA}>Ist das ein DFA?</button>
-              <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
-                  {isDfaResult !== null && (
-                      <div>{isDfaResult ? 'Ja' : 'Nein'}</div>
-                  )}
-              </div>
-          </div>
       </div>
           </>
 

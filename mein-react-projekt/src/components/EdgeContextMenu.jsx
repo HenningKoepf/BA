@@ -38,7 +38,7 @@ export default function EdgeContextMenu({
                 })
             );
         }
-    }, [setEdges]);
+    }, [id,setEdges]);
 
 
 

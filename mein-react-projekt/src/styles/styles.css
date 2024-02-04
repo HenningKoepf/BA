@@ -1,3 +1,7 @@
+.App {
+  display: flex; /* Verwenden Sie Flexbox, um den Inhalt anzuordnen */
+  justify-content: space-between; /* Platzieren Sie den Inhalt am linken und rechten Rand */
+}
 
 .context-menu {
   background: white;
@@ -30,6 +34,7 @@
 }
 .react-flow{
   height: 80vh !important;
+  width: 70%;
 }
 
 .node {
@@ -41,7 +46,7 @@
 
 .toptext {
   font-size: 32px;
-  font-family: "Apple Braille";
+  font-family: "Apple Braille", serif;
   text-align: center;
 }
 
@@ -55,7 +60,7 @@
   border: 1px solid #000;
   border-radius: 40px;
   font-weight: bold;
-  font-family: "Apple Braille";
+  font-family: "Apple Braille", serif;
 
 }
 
