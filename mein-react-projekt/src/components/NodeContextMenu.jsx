@@ -11,15 +11,19 @@ export default function NodeContextMenu({
   ...props
 }) {
   const { getNode, setNodes, addNodes, setEdges } = useReactFlow();
+  const newHandlerId = Math.random();
+
   const duplicateNode = useCallback(() => {
     const node = getNode(id);
     const position = {
       x: node.position.x + 50,
       y: node.position.y + 50,
+
     };
 
-    addNodes({ ...node, id: `${node.id}-copy`, position });
-  }, [id, getNode, addNodes]);
+    addNodes({ ...node, id: `${node.id}-copy`, position,
+      handlerId: newHandlerId});
+  }, [id, getNode, addNodes, newHandlerId]);
 
 
 

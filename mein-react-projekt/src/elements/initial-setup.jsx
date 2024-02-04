@@ -42,6 +42,7 @@ export const initialNodes: Node[] = [
         position: { x: 500, y: 150 },
         targetPosition: 'left',
         type: 'output',
+
     },
 ];
 
@@ -84,7 +85,18 @@ export const initialEdges: Edge[] = [
         target: 'Zustand 3',
         type: 'selfconnecting',
         markerEnd: { type: MarkerType.ArrowClosed },
-    }
+    },
+    /*
+
+    {
+        id: 'end-self-loop',
+        source: 'Endzustand',
+        target: 'Endzustand',
+        label: 'b' ,
+        type: 'selfconnecting',
+        markerEnd: { type: MarkerType.ArrowClosed }
+    },
+     */
 ];
 
 const initalData = {

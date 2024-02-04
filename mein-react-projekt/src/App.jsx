@@ -256,7 +256,9 @@ function App() {
 
           <div className="App"
           style={{ width: '100vw', height: '60vw' }}>
+
               <div className="Kontrollcontainer">
+                  <legend><strong>Eingabe: </strong></legend>
               <div className="DFAContainer">
                   <button onClick={checkIsDFA}>Ist das ein DFA?</button>
                   <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
@@ -286,6 +288,9 @@ function App() {
         </ReactFlow>
 
       </div>
+          <footer>
+              <p><strong>&copy; 2024 Henning Köpf</strong> - <strong>Kontakt:</strong> henning.koepf@gmx.de</p>
+          </footer>
           </>
 
   );
