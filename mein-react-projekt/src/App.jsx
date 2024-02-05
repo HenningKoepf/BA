@@ -285,7 +285,9 @@ function App() {
                           }}
                       />
                       <div>Aktuelles Alphabet:</div>
-                      <div className="alphabet">{`{${alphabet.join(', ')}}`}</div>
+
+                      <div className="alphabet">{`Σ = {${alphabet.join(', ')}}`}</div>
+
                   </div>
               <div className="DFAContainer">
                   <button onClick={checkIsDFA}>Ist das ein DFA?</button>
