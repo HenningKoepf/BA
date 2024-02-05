@@ -9,7 +9,6 @@ import ReactFlow, {
     BaseEdge,
     Connection,
     ConnectionMode,
-
     Node, MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
@@ -37,10 +36,15 @@ const EdgeTypes = {
 
 function App() {
 
+    //State Listener
     const [edgemenu, setEdgeMenu] = useState(null);
     const [menu, setMenu] = useState(null);
     const [nodeBg, setNodeBg] = useState('#eee');
-    //Startalphabet default noch durch Textbox zu setzen
+    const [isDfaResult, setIsDfaResult, onChange] = useState(null);
+
+    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
     const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
@@ -49,6 +53,7 @@ function App() {
     const ref = useRef(null);
     const kontrollContainerRef = useRef(null);
     const topTextRef = useRef(null);
+
     /**
      * Beim Klick auf das Canvas sollen alle Menüs geschlossen werden
      * @type {(function(): void)|*}
@@ -57,12 +62,6 @@ function App() {
         setMenu(null); // Set das Menu zurück
         setEdgeMenu(null); // Setz das edgeMenu zurück
     }, [setMenu, setEdgeMenu]);
-
-
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-    const [isDfaResult, setIsDfaResult, onChange] = useState(null);
 
 
     /**
@@ -179,7 +178,7 @@ function App() {
     );
 
     /**
-     * Der Klick auf den Prüfbutton erzeugt eine Prüfinstanz und setzt den Wert, so das neu gerendert wird
+     * Der Klick auf den Prüfbutton erzeugt eine Prüfinstanz auf DFA Konformitat und setzt den Wert, so das neu gerendert wird
      */
 
     const checkIsDFA = () => {
@@ -223,6 +222,17 @@ function App() {
                 transitions.set(key, new Set());
             });
         });
+        const stateLabels = new Set(); // Ein Set, um eindeutige Labels zu speichern
+
+        for (const node of nodes) {
+            if (stateLabels.has(node.data.label)) {
+                // Wenn das Label bereits im Set ist, gibt es einen Konflikt
+                console.error(`Mehrere Zustände mit dem Label '${node.data.label}' gefunden.`);
+                alert(`Es ist kein DFA. Mehrere Zustände mit dem Label '${node.data.label}' gefunden.`);
+                return false;
+            }
+            stateLabels.add(node.data.label); // Füge das Label zum Set hinzu
+        }
 
         // Verarbeiten der Kanten und Überprüfen der Symbole gegen das Alphabet
         for (const edge of edges) {
