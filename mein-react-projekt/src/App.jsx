@@ -222,16 +222,16 @@ function App() {
                 transitions.set(key, new Set());
             });
         });
-        const stateLabels = new Set(); // Ein Set, um eindeutige Labels zu speichern
+        const stateLabels = new Set();
 
         for (const node of nodes) {
             if (stateLabels.has(node.data.label)) {
-                // Wenn das Label bereits im Set ist, gibt es einen Konflikt
+                // Wenn das Label bereits im Set ist, gibt es ein Duplikat
                 console.error(`Mehrere Zustände mit dem Label '${node.data.label}' gefunden.`);
                 alert(`Es ist kein DFA. Mehrere Zustände mit dem Label '${node.data.label}' gefunden.`);
                 return false;
             }
-            stateLabels.add(node.data.label); // Füge das Label zum Set hinzu
+            stateLabels.add(node.data.label);
         }
 
         // Verarbeiten der Kanten und Überprüfen der Symbole gegen das Alphabet
@@ -326,9 +326,11 @@ function App() {
                           value={inputAlphabet}
                           onInput={(e) => {handleAlphabetInput(e)}}
                       />
-                      <div>Aktuelles Alphabet:</div>
+                      <div>Aktuelle Konfiguration:</div>
 
                       <div className="alphabet">{`Σ = {${alphabet.join(', ')}}`}</div>
+                      <div className="nodes">{`Zustände`}</div>
+                      <div className="edges">{`Übergänge`}</div>
 
                   </div>
               <div className="DFAContainer">
