@@ -41,7 +41,8 @@ export const initialNodes: Node[] = [
         style: {backgroundColor: '#9c12c2'},
         position: { x: 500, y: 150 },
         targetPosition: 'left',
-        type: 'output',
+        sourcePosition: 'right'
+
 
     },
 ];

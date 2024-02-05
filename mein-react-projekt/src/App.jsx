@@ -42,8 +42,9 @@ function App() {
     const [menu, setMenu] = useState(null);
     const [nodeBg, setNodeBg] = useState('#eee');
 
+
     //Startalphabet default noch durch Textbox zu setzen
-    const alphabet = ['a', 'b','c'];
+    const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
 
     const ref = useRef(null);
     /**
@@ -171,7 +172,7 @@ function App() {
 
     function isDFA(nodes, edges, alphabet) {
         if (!nodes || !edges || !alphabet) {
-            console.error('Einer der Inputs (nodes, edges, alphabet) ist undefined.');
+            console.error('Einer der Inputs (nodes, edges, alphabet) ist nicht richtig definiert.');
             return false;
         }
 
@@ -205,6 +206,7 @@ function App() {
                     // Symbol nicht im Alphabet, daher kein gültiger DFA
                     console.error(`Ungültiges Symbol '${symbol}' in Kante '${edge.id}' gefunden.`);
                     alert(`Es ist kein DFA. Ungültiges Symbol '${symbol}' in Kante '${edge.id}' gefunden.`);
+
                     return false;
                 }
                 const key = `${edge.source}-${symbol}`;
@@ -222,6 +224,7 @@ function App() {
             if (targetStates.size > 1) {
                 alert(`Es ist kein DFA. Ungültiges Symbol beim Knoten '${key}' `);
                 // Mehr als ein Übergang für ein Symbol in einem Zustand gefunden das wid kein DFA sein
+
                 return false;
             }
         }
@@ -248,9 +251,21 @@ function App() {
         return true; // Der Automat ist ein DFA (wir implizieren Müllzustände))
     }
 
+    /**
+     * Aktualisieren des aktuell akzeptiereten Alphabets
+     * @param newAlphabet
+     */
+    const [inputAlphabet, setInputAlphabet] = useState(alphabet.join(', '));
+
+    const updateAlphabet = (inputValue) => {
+        const newAlphabet = inputValue.split(/[;,]\s*|\s+/).map(symbol => symbol.trim()).filter((symbol, index, array) => array.indexOf(symbol) === index);
+        setAlphabet(newAlphabet);
+    };
 
 
-  return (
+
+
+    return (
       <>
      <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
 
@@ -259,6 +274,19 @@ function App() {
 
               <div className="Kontrollcontainer">
                   <legend><strong>Eingabe: </strong></legend>
+                  <div>
+                      <label>Alphabet bearbeiten:</label>
+                      <input
+                          type="text"
+                          value={inputAlphabet}
+                          onInput={(e) => {
+                              setInputAlphabet(e.target.value);
+                              updateAlphabet(e.target.value);
+                          }}
+                      />
+                      <div>Aktuelles Alphabet:</div>
+                      <div className="alphabet">{`{${alphabet.join(', ')}}`}</div>
+                  </div>
               <div className="DFAContainer">
                   <button onClick={checkIsDFA}>Ist das ein DFA?</button>
                   <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>

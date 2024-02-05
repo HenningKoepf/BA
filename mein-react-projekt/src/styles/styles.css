@@ -2,6 +2,9 @@
   display: flex; /* Verwenden Sie Flexbox, um den Inhalt anzuordnen */
   justify-content: space-between; /* Platzieren Sie den Inhalt am linken und rechten Rand */
 }
+.alphabet {
+  display: block;
+}
 
 .context-menu {
   background: white;
@@ -125,14 +128,61 @@ Dicker Rand für Endzustand
 }
 
 .Kontrollcontainer{
-  border: black solid;
+  border: 1px solid lightgray;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
   height: 80vh;
-}
-.Kontrollcontainer {
-  display: flex; /* Aktiviert Flexbox-Layout */
+  display: flex;
   flex-direction: column; /* Anordnung der Inhalte in Spalten */
   align-items: flex-start; /* Horizontale Ausrichtung */
   justify-content: flex-start; /* Vertikale Ausrichtung */
+}
+.Kontrollcontainer label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.Kontrollcontainer input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.Kontrollcontainer .alphabet {
+  font-family: monospace; /* Für eine bessere Darstellung von Mengenklammern */
+  margin-top: 5px;
+}
+
+.Kontrollcontainer button {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px; /* Abstand zum vorherigen Element */
+}
+
+.Kontrollcontainer .DFAAnzeige {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: 5px;
+  border: none;
+}
+
+.Kontrollcontainer .DFAAnzeige.true {
+  background-color: #28a745; /* Grün für "Ja" */
+  color: black;
+}
+
+.Kontrollcontainer .DFAAnzeige.false {
+  background-color: #dc3545; /* Rot für "Nein" */
+  color: black;
 }
 
 
@@ -141,16 +191,6 @@ Dicker Rand für Endzustand
   align-items: center; /* Zentriert die Inhalte vertikal */
 }
 
-.DFAAnzeige {
-  /* Abstand zum rechten Rand */
-  display: flow-root;
-  height: 20px;
-  width: 30px;
-  padding: 7px;
-  border: 1px solid #000;
-  font-weight: bold;
-  font-family: "Apple Braille", serif;
-}
 
 /* Stil für True */
 .DFAAnzeige.true {
