@@ -25,6 +25,13 @@
 .context-menu button:hover {
   background: white;
 }
+.react-flow__basenode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
 
 .react-flow__node {
   height:50px;
@@ -32,8 +39,13 @@
   font-size: 8px;
   background: #eee;
   border: 1px solid #555;
+  /*
+
   border-radius: 5px;
+   */
+  border-radius: 50%;
   text-align: center;
+  justify-content: center;
 }
 /*
 Dicker Rand für Endzustand
@@ -43,7 +55,7 @@ Dicker Rand für Endzustand
   background: lightgreen; /* Hintergrundfarbe anpassen */
   font-weight: bold; /* Schriftart anpassen */
   position: relative; /* Position relativ setzen */
-  border-radius: 2px; /* Randradius anpassen */
+  border-radius: 50%;
 }
 
 /* Erste Rahmenlinie */
@@ -55,18 +67,18 @@ Dicker Rand für Endzustand
   right: -2px; /* Abstand von rechts */
   bottom: -2px; /* Abstand von unten */
   border: 1px solid black; /* Erste Rahmenlinie */
-  border-radius: 5px; /* Randradius anpassen */
+  border-radius: 50%;
 }
 /* Zweite Rahmenlinie */
 .react-flow__node[data-id="Endzustand"]::after {
   content: '';
   position: absolute;
-  top: -4px; /* Abstand von oben */
-  left: -4px; /* Abstand von links */
-  right: -4px; /* Abstand von rechts */
-  bottom: -4px; /* Abstand von unten */
+  top: -5px; /* Abstand von oben */
+  left: -5px; /* Abstand von links */
+  right: -5px; /* Abstand von rechts */
+  bottom: -5px; /* Abstand von unten */
   border: 1px solid black; /* Zweite Rahmenlinie */
-  border-radius: 5px; /* Randradius anpassen */
+  border-radius: 50%;
   z-index: -1; /* Hinter die erste Rahmenlinie legen */
 }
 
@@ -83,7 +95,7 @@ Dicker Rand für Endzustand
   top: 50%; /* Vertikale Ausrichtung auf 50% des Knotens */
   left: -10px; /* Horizontaler Abstand zum Knoten */
   border: solid transparent; /* Transparenter Rand */
-
+  border-radius: 50%;
   width: 0;
   height: 0;
   transform: translateY(-50%); /* Vertikale Ausrichtung zentrieren */
@@ -93,12 +105,12 @@ Dicker Rand für Endzustand
   position: absolute; /* Absolute Positionierung relativ zum Elternelement */
   top: 50%; /* Vertikale Ausrichtung auf 50% des Knotens */
   left: -10px; /* Horizontaler Abstand zum Knoten */
-  border: solid transparent; /* Transparenter Rand */
-  border-left-color: #555; /* Farbe des Pfeils (hier: grau) */
-  border-width: 5px; /* Breite des Pfeils */
+  border-radius: 50%;
+  border: 5px solid transparent;
+  border-left-color: #555;
   width: 0;
   height: 0;
-  transform: translateY(-50%); /* Vertikale Ausrichtung zentrieren */
+  transform: translateY(-50%);
 }
 
 

@@ -18,6 +18,7 @@ import './updatenode.css';
 import NodeContextMenu from './components/NodeContextMenu';
 import EdgeContextMenu from './components/EdgeContextMenu';
 import SelfConnectingEdge from './elements/SelfConnectingEdge';
+import BaseNode from './elements/BaseNode';
 import { initialNodes, initialEdges } from './elements/initial-setup';
 
 import Inputform from './components/Inputform';
@@ -27,10 +28,15 @@ import Inputform from './components/Inputform';
 import { data } from "./data/data";
 import ButtonEdge from './elements/ButtonEdge';
 import NewNodeButton from './buttonfunctions';
+import NodeLabelList from './components/NodeLabelList';
 
 const EdgeTypes = {
     buttonedge: ButtonEdge,
     selfconnecting: SelfConnectingEdge,
+};
+
+const NodeTypes = {
+    basenode: BaseNode,
 };
 
 
@@ -165,8 +171,8 @@ function App() {
             const topTextHeight = topText.height;
 
             // Sicherstellen, dass das Menü nicht neben dem Fenster gerendert wrid
-            const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 200); // Begrenze die linke Position entsprechend der Breite des .Kontrollcontainer
-            const top = Math.min(clickY -topTextHeight, pane.height -topTextHeight - 200);
+            const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 100); // Begrenze die linke Position entsprechend der Breite des .Kontrollcontainer
+            const top = Math.min(clickY -topTextHeight, pane.height -topTextHeight - 100);
 
             setMenu({
                 id: node.id,
@@ -193,6 +199,9 @@ function App() {
      * Validität der Kantenlabels: Es wird überprüft, ob alle Kantenlabels gültige Symbole des Alphabets enthalten.
      * Eindeutigkeit der Übergänge: Für jedes Symbol in jedem Zustand darf es höchstens einen Übergang geben.
      * Erreichbarkeit aller Zustände: Alle Zustände müssen vom Startzustand aus erreichbar sein.
+     *
+     * TODO Endzustandbehandlung
+     *
      * @param nodes
      * @param edges
      * @param alphabet
@@ -330,6 +339,7 @@ function App() {
 
                       <div className="alphabet">{`Σ = {${alphabet.join(', ')}}`}</div>
                       <div className="nodes">{`Zustände`}</div>
+                      <NodeLabelList nodes={nodes} />
                       <div className="edges">{`Übergänge`}</div>
 
                   </div>
@@ -349,7 +359,7 @@ function App() {
             onPaneClick={onPaneClick}
             onConnect={onConnect}
             edgeTypes={EdgeTypes}
-            //nodeTypes={nodeTypes}
+            nodeTypes={NodeTypes}
             onNodeContextMenu = {onNodeContextMenu}
             onEdgeContextMenu = {onEdgeContextMenu}
             fitView //Für den automatischen Fullscreen

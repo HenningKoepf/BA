@@ -2,42 +2,51 @@ import {
     Node, MarkerType
 
 } from 'reactflow';
+import BaseNode from './BaseNode';
 
 
 
 export const initialNodes: Node[] = [
     {
-        id: 'input',
-        type: 'input',
-        style: {backgroundColor: '#1ec212'},
-        data: { label: 'Z0: Input' },
-        position: { x: 100, y: 50 },
+        id: 'Z0',
+        data: { label: 'Z0' },
+        position: { x: 410, y: 30 },
+        targetPosition: 'left',
         sourcePosition: 'right',
     },
     {
-        id: 'Zustand 1',
-        data: { label: 'Zustand 1' },
+        id: 'Z1',
+        type: 'input',
+        style: {backgroundColor: '#1ec212'},
+        data: { label: 'Z1: Input' },
+        position: { x: 100, y: 50 },
+        sourcePosition: 'right',
+        targetPosition: 'left',
+    },
+    {
+        id: 'Z2',
+        data: { label: 'Z2' },
         position: { x: 300, y: 50 },
         targetPosition: 'left',
         sourcePosition: 'right',
     },
     {
-        id: 'Zustand 2',
-        data: { label: 'Zustand 2' },
+        id: 'Z3',
+        data: { label: 'Z3' },
         position: { x: 100, y: 250 },
         targetPosition: 'left',
         sourcePosition: 'right',
     },
     {
-        id: 'Zustand 3',
-        data: { label: 'Zustand 3' },
+        id: 'Z4',
+        data: { label: 'Z4' },
         position: { x: 300, y: 250 },
         targetPosition: 'left',
         sourcePosition: 'right',
     },
     {
         id: 'Endzustand',
-        data: {label: 'Z4: Output' },
+        data: {label: 'Z5: Output' },
         style: {backgroundColor: '#9c12c2'},
         position: { x: 500, y: 150 },
         targetPosition: 'left',
@@ -50,8 +59,8 @@ export const initialNodes: Node[] = [
 export const initialEdges: Edge[] = [
     {
         id: 'edge-1-2',
-        source: 'input',
-        target: 'Zustand 1',
+        source: 'Z1',
+        target: 'Z2',
 
         label: 'a',
        
@@ -59,21 +68,21 @@ export const initialEdges: Edge[] = [
     },
     {
         id: 'edge-2-3',
-        source: 'Zustand 1',
-        target: 'Zustand 2',
+        source: 'Z2',
+        target: 'Z3',
         label: 'a',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
         id: 'edge-3-4',
-        source: 'Zustand 2',
-        target: 'Zustand 3',
+        source: 'Z3',
+        target: 'Z4',
         label: 'a',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
         id: 'edge-4-5',
-        source: 'Zustand 3',
+        source: 'Z4',
         target: 'Endzustand',
         label: 'b',
         markerEnd: { type: MarkerType.ArrowClosed },
@@ -82,8 +91,8 @@ export const initialEdges: Edge[] = [
     {
         id: 'edge-self',
         label: 'a' ,
-        source: 'Zustand 3',
-        target: 'Zustand 3',
+        source: 'Z4',
+        target: 'Z4',
         type: 'selfconnecting',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
