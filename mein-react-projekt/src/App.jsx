@@ -226,6 +226,7 @@ function App() {
 
         // Verarbeiten der Kanten und Überprüfen der Symbole gegen das Alphabet
         for (const edge of edges) {
+
             const symbols = edge.label.split(/[,;\s]\s*/).map(symbol => symbol.trim());
                 /*
                 Ünterstützt mehrere Symbole pro Kante, Trennung mit , oder ; oder Leerzeichen möglich
@@ -253,6 +254,7 @@ function App() {
         for (let [key, targetStates] of transitions) {
             if (targetStates.size > 1) {
                 alert(`Es ist kein DFA. Ungültiges Symbol beim Knoten '${key}' `);
+                console.error(`Ungültiges Symbol beim Knoten '${key}' gefunden.`);
                 // Mehr als ein Übergang für ein Symbol in einem Zustand gefunden das wid kein DFA sein
 
                 return false;
