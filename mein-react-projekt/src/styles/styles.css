@@ -74,6 +74,7 @@ Dicker Rand für Endzustand
   border: 2px solid black;
   background: lightgreen;
 }
+
 /* Regel für den Pfeil am Knoten mit ID "input" */
 
 .react-flow__node[data-id="input"]::before {
@@ -82,8 +83,7 @@ Dicker Rand für Endzustand
   top: 50%; /* Vertikale Ausrichtung auf 50% des Knotens */
   left: -10px; /* Horizontaler Abstand zum Knoten */
   border: solid transparent; /* Transparenter Rand */
-  border-left-color: #555; /* Farbe des Pfeils (hier: grau) */
-  border-width: 5px; /* Breite des Pfeils */
+
   width: 0;
   height: 0;
   transform: translateY(-50%); /* Vertikale Ausrichtung zentrieren */
@@ -103,11 +103,11 @@ Dicker Rand für Endzustand
 
 
 
-
-
 .react-flow{
-  height: 80vh !important;
-  width: 50%;
+  height: 82vh !important;
+  width: 100%;
+  border: 1px solid lightgray;
+  border-radius: 5px;
 }
 
 .node {

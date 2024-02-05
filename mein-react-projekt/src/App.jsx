@@ -32,7 +32,6 @@ import NewNodeButton from './buttonfunctions';
 const EdgeTypes = {
     buttonedge: ButtonEdge,
     selfconnecting: SelfConnectingEdge,
-
 };
 
 
@@ -41,12 +40,15 @@ function App() {
     const [edgemenu, setEdgeMenu] = useState(null);
     const [menu, setMenu] = useState(null);
     const [nodeBg, setNodeBg] = useState('#eee');
-
-
     //Startalphabet default noch durch Textbox zu setzen
     const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
-
+    /**
+     * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
+     * @type {{current: (unknown|null)}}
+     */
     const ref = useRef(null);
+    const kontrollContainerRef = useRef(null);
+    const topTextRef = useRef(null);
     /**
      * Beim Klick auf das Canvas sollen alle Menüs geschlossen werden
      * @type {(function(): void)|*}
@@ -56,8 +58,10 @@ function App() {
         setEdgeMenu(null); // Setz das edgeMenu zurück
     }, [setMenu, setEdgeMenu]);
 
+
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
     const [isDfaResult, setIsDfaResult, onChange] = useState(null);
 
 
@@ -70,12 +74,25 @@ function App() {
     const onEdgeContextMenu = useCallback((event,edge) => {
         // Kein normales Kontextmenü
         event.preventDefault();
+                //Koordinaten de clicks
+                const clickX = event.clientX;
+                const clickY = event.clientY;
 
-        const pane = ref.current.getBoundingClientRect();
+                //Größe des Kontainers daneben
+                const kontrollContainer = kontrollContainerRef.current.getBoundingClientRect();
+                const kontrollContainerWidth = kontrollContainer.width;
+                const pane = ref.current.getBoundingClientRect();
+
+                const topText = topTextRef.current.getBoundingClientRect();
+                const topTextHeight = topText.height;
+
+                const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 200); // Begrenze die linke Position entsprechend der Breite des .Kontrollcontainer
+                const top = Math.min(clickY -topTextHeight, pane.height -topTextHeight - 200);
+
             setEdgeMenu({
                 id: edge.id,
-                top: event.clientY < pane.height - 200 && event.clientY,
-                left: event.clientX < pane.width - 200 && event.clientX,
+                top: top,
+                left: left,
                 right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
                 bottom:
                     event.clientY >= pane.height - 200 && pane.height - event.clientY,
@@ -129,20 +146,33 @@ function App() {
      */
 //Kontextmenü der Knoten
 
+
     const onNodeContextMenu = useCallback(
         (event, node) => {
             // Kein normales Kontextmenü
             event.preventDefault();
 
-            // Sicherstellen, dass das Menü nicht neben dem Fenster gerendert wrid
+            //Koordinaten de clicks
+            const clickX = event.clientX;
+            const clickY = event.clientY;
+
             const pane = ref.current.getBoundingClientRect();
+
+            //Größe des Kontainers daneben
+            const kontrollContainer = kontrollContainerRef.current.getBoundingClientRect();
+            const kontrollContainerWidth = kontrollContainer.width;
+
+            const topText = topTextRef.current.getBoundingClientRect();
+            const topTextHeight = topText.height;
+
+            // Sicherstellen, dass das Menü nicht neben dem Fenster gerendert wrid
+            const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 200); // Begrenze die linke Position entsprechend der Breite des .Kontrollcontainer
+            const top = Math.min(clickY -topTextHeight, pane.height -topTextHeight - 200);
+
             setMenu({
                 id: node.id,
-                top: event.clientY < pane.height - 200 && event.clientY,
-                left: event.clientX < pane.width - 200 && event.clientX,
-                right: event.clientX >= pane.width - 200 && pane.width - event.clientX,
-                bottom:
-                    event.clientY >= pane.height - 200 && pane.height - event.clientY,
+                left,
+                top,
             });
         },
         [setMenu],
@@ -256,7 +286,10 @@ function App() {
      * @param newAlphabet
      */
     const [inputAlphabet, setInputAlphabet] = useState(alphabet.join(', '));
-
+    const handleAlphabetInput = (e) => {
+        setInputAlphabet(e.target.value);
+        updateAlphabet(e.target.value);
+    }
     const updateAlphabet = (inputValue) => {
         const newAlphabet = inputValue.split(/[;,]\s*|\s+/).map(symbol => symbol.trim()).filter((symbol, index, array) => array.indexOf(symbol) === index);
         setAlphabet(newAlphabet);
@@ -267,22 +300,19 @@ function App() {
 
     return (
       <>
-     <div className="toptext" >D F A ---  M I N I M I E R E R ! </div>
+     <div className="toptext" ref={topTextRef} >D F A ---  M I N I M I E R E R ! </div>
 
           <div className="App"
           style={{ width: '100vw', height: '60vw' }}>
 
-              <div className="Kontrollcontainer">
+              <div className="Kontrollcontainer" ref={kontrollContainerRef}>
                   <legend><strong>Eingabe: </strong></legend>
                   <div>
                       <label>Alphabet bearbeiten:</label>
                       <input
                           type="text"
                           value={inputAlphabet}
-                          onInput={(e) => {
-                              setInputAlphabet(e.target.value);
-                              updateAlphabet(e.target.value);
-                          }}
+                          onInput={(e) => {handleAlphabetInput(e)}}
                       />
                       <div>Aktuelles Alphabet:</div>
 
@@ -319,7 +349,7 @@ function App() {
 
       </div>
           <footer>
-              <p><strong>&copy; 2024 Henning Köpf</strong> - <strong>Kontakt:</strong> henning.koepf@gmx.de</p>
+              <p><strong>&copy; 2024 Henning Köpf</strong> - <strong>Kontakt:</strong> ************@gmx.de</p>
           </footer>
           </>
 
