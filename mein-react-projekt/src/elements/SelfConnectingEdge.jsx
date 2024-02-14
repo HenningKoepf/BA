@@ -7,14 +7,14 @@ export default function SelfConnecting(props: BaseEdgeProps){
   // wird schon in der App abgefangen.
 
   const { sourceX, sourceY, targetX, targetY, id, markerEnd, label,style } = props;
-  const radiusX = (sourceX - targetX) * 0.6;
+  const radiusX = (sourceX - targetX) * 0.5;
   const radiusY = 40;
   const edgePath = `M ${sourceX - 5} ${sourceY} A ${radiusX} ${radiusY} 0 1 0 ${
     targetX + 2
   } ${targetY}`;
 
   const labelX = (sourceX + targetX) / 2;
-  const labelY = (sourceY + targetY) / 2 - 75; // Etwas oberhalb der Mitte der Kante
+  const labelY = (sourceY + targetY) / 2 - 65; // Etwas oberhalb der Mitte der Kante
 
 
   return(
