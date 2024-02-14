@@ -52,6 +52,7 @@ function App() {
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
+    const {partitions, setPartitions} = useState(null);
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
      * @type {{current: (unknown|null)}}

@@ -2,6 +2,21 @@ import React, {useCallback, useState} from 'react';
 import { useReactFlow } from 'reactflow';
 import Inputform from './Inputform';
 
+/**
+ * Öffnet ein Kontextmenü bei Rechtsklick auf einen Knoten um diesen zu
+ * einem Endzustand zu machen
+ * einem Startzustand zu machen
+ * zu löschen
+ * einen neuen Knoten zu erzeugen
+ * @param id
+ * @param top
+ * @param left
+ * @param right
+ * @param bottom
+ * @param props
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function NodeContextMenu({
   id,
   top,
@@ -13,6 +28,11 @@ export default function NodeContextMenu({
   const { getNode, setNodes, addNodes, setEdges } = useReactFlow();
   const newHandlerId = Math.random();
 
+  /**
+   * Funktion um einen neuen Knoten mit eigenen Handlers für neue Edges zu erstellen.
+   * Einzige möglichkeit um neue Knoten auf dem Pane und dem DOM hinzuzufügen
+   * @type {(function(): void)|*}
+   */
   const duplicateNode = useCallback(() => {
     const node = getNode(id);
     const position = {
@@ -25,7 +45,10 @@ export default function NodeContextMenu({
       handlerId: newHandlerId});
   }, [id, getNode, addNodes, newHandlerId]);
 
-
+  /**
+   * Knoten wird entfernt und jegliche damit zusammenhzängende Kanten werden aus dem DOM gelöscht
+   * @type {(function(): void)|*}
+   */
 
   const deleteNode = useCallback(() => {
     setNodes((nodes) => nodes.filter((node) => node.id !== id));
@@ -33,6 +56,10 @@ export default function NodeContextMenu({
     setEdges((edges) => edges.filter((edge) => edge.target !== id));
   }, [id, setNodes, setEdges]);
 
+  /**
+   * Funktion um einem Knoten den Zustand eines "Startzustandes" zu verpassen, inkl styling
+   * @type {(function(): void)|*}
+   */
   const changeToInputNode = useCallback(() => {
     setNodes((nodes) =>
         nodes.map((node) => {
@@ -43,6 +70,11 @@ export default function NodeContextMenu({
         })
     );
   }, [id, setNodes]);
+
+  /**
+   * Funktion um einem Knoten den Zustand eines "Endzustandes" zu verpassen, inkl styling
+   * @type {(function(): void)|*}
+   */
 
   const changeToOutputNode = useCallback(() => {
     setNodes((nodes) =>
@@ -73,6 +105,10 @@ export default function NodeContextMenu({
      );
   }, [id, setNodes]);
 
+  /**
+   * Funktion um einen Knoten umzubenennen, autom. rerendering über Callback
+   * @type {(function(): void)|*}
+   */
   const renameNode = useCallback(() => {
     /*
     TODO Inputform statt window.promt
@@ -83,7 +119,6 @@ export default function NodeContextMenu({
       setNodes((nodes) =>
           nodes.map((node) => {
             if (node.id === id) {
-              // Aktualisieren Sie das Label des gewünschten Knotens
               return {
                 ...node,
                 data: {
