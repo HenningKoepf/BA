@@ -27,14 +27,14 @@ function findPartitionForState(targetLabel, partitions) {
     // Durchläuft alle Partitionen, um die zu finden, die den Zielzustand enthält
     return partitions.find(partition => partition.some(node => node.label === targetLabel));
 }
-/*
+
 const formatPartitions = (partitions) => {
     return partitions.map(partition =>
         partition.map(node => node.data.label).join(' ')
     ).join(' | ');
 };
 
- */
+
 
 function refinePartitions(nodes, edges, alphabet) {
     // Initialisiere Partitionen mit Endzuständen und Nicht-Endzuständen
@@ -54,7 +54,9 @@ function refinePartitions(nodes, edges, alphabet) {
                     const target = findTargetState(node, symbol, edges);
                     //liegt das Ziel in eienr andreen Partition, wenn ja , welche
                     const targetPartition = findPartitionForState(target, partitions);
-                    const partitionKey = targetPartition.map(n => n.label).sort().join(',');
+                    const partitionKey = targetPartition ? targetPartition.map(n => n.label).sort().join(',') : 'undefined';
+
+                  //  const partitionKey = targetPartition.map(n => n.label).sort().join(',');
 
                     if (!partitionMap.has(partitionKey)) {
                         partitionMap.set(partitionKey, []);
@@ -62,12 +64,10 @@ function refinePartitions(nodes, edges, alphabet) {
                     partitionMap.get(partitionKey).push(node);
                 });
             });
-
             // Wenn eine Partition in mehrere Teile aufgeteilt wird, markiere Änderung als true
             if (partitionMap.size > 1) {
                 changed = true;
             }
-
             partitionMap.forEach(subPartition => {
                 newPartitions.push(subPartition);
             });
@@ -89,7 +89,7 @@ if (isDfaResult != true){
 else{
     //cheated on the formatting
 
-    const formattedPartitions = refinePartitions(nodes,edges, alphabet);
+    const formattedPartitions = formatPartitions(refinePartitions(nodes,edges, alphabet));
     return (
         <>
             <h2>DFA Partitionen</h2>
