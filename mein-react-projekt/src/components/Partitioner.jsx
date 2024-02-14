@@ -17,7 +17,7 @@ function findTargetState(node, symbol, edges) {
     // Durchsuche alle Kanten, um Übereinstimmungen mit dem Symbol zu finden
     const edge = edges.find(edge => {
         const übergänge = edge.label.split(/[\s,;]+/); // Splitte das Label der Kante
-        return edge.source === node.label && übergänge.includes(symbol); // Prüfe, ob die Quelle und das Symbol übereinstimmen
+        return edge.source === node.data.label && übergänge.includes(symbol); // Prüfe, ob die Quelle und das Symbol übereinstimmen
     });
 
     return edge ? edge.target : null;
@@ -25,7 +25,7 @@ function findTargetState(node, symbol, edges) {
 
 function findPartitionForState(targetLabel, partitions) {
     // Durchläuft alle Partitionen, um die zu finden, die den Zielzustand enthält
-    return partitions.find(partition => partition.some(node => node.label === targetLabel));
+    return partitions.find(partition => partition.some(node => node.data.label === targetLabel));
 }
 
 const formatPartitions = (partitions) => {
@@ -34,7 +34,57 @@ const formatPartitions = (partitions) => {
     ).join(' | ');
 };
 
+function refinePartitions(nodes, edges, alphabet) {
+    let partitions = initialPartition(nodes);
 
+    let changed = true;
+    while (changed) {
+        changed = false;
+        let newPartitions = [];
+
+        partitions.forEach(partition => {
+            let partitionMap = new Map();
+
+            partition.forEach(node => {
+                // Sammle alle Übergänge für die aktuelle Node
+                let symbolsForNode = new Set();
+                edges.forEach(edge => {
+                    if (edge.source === node.data.label) {
+                        edge.label.split(/[\s,;]+/).forEach(symbol => symbolsForNode.add(symbol));
+                    }
+                });
+                console.log(symbolsForNode);
+
+                symbolsForNode.forEach(symbol => {
+                    const target = findTargetState(node, symbol, edges);
+                    console.log('Knoten ' + node.data.label + ' mit Übergang: ' + symbol);
+                    const targetPartition = findPartitionForState(target, partitions);
+                    const partitionKey = targetPartition
+                        ? targetPartition.map(n => n.label).sort().join(',')
+                        : 'Müllzustand';
+
+                    if (!partitionMap.has(partitionKey)) {
+                        partitionMap.set(partitionKey, []);
+                    }
+                    partitionMap.get(partitionKey).push(node);
+                });
+            });
+
+            if (partitionMap.size > 1) {
+                changed = true;
+            }
+            partitionMap.forEach(subPartition => {
+                newPartitions.push(subPartition);
+            });
+        });
+
+        partitions = newPartitions;
+    }
+
+    return partitions;
+}
+
+/*
 
 function refinePartitions(nodes, edges, alphabet) {
     // Initialisiere Partitionen mit Endzuständen und Nicht-Endzuständen
@@ -54,12 +104,18 @@ function refinePartitions(nodes, edges, alphabet) {
                     const target = findTargetState(node, symbol, edges);
                     //liegt das Ziel in eienr andreen Partition, wenn ja , welche
                     const targetPartition = findPartitionForState(target, partitions);
-                    const partitionKey = targetPartition ? targetPartition.map(n => n.label).sort().join(',') : 'undefined';
+
+                    const partitionKey = targetPartition
+                        ? targetPartition.map(n => n.label).sort().join(',')
+                        : 'Müllzustand';
+
 
                   //  const partitionKey = targetPartition.map(n => n.label).sort().join(',');
 
+
                     if (!partitionMap.has(partitionKey)) {
                         partitionMap.set(partitionKey, []);
+
                     }
                     partitionMap.get(partitionKey).push(node);
                 });
@@ -78,7 +134,7 @@ function refinePartitions(nodes, edges, alphabet) {
 
     return partitions;
 }
-
+*/
 
 
 const Partitioner = ({ isDfaResult, nodes, edges, alphabet }) => {
