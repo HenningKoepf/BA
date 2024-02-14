@@ -48,12 +48,13 @@ export default function NodeContextMenu({
     setNodes((nodes) =>
         nodes.map((node) => {
           if (node.id === id){
+            let text = node.data.label;
             return {...node ,targetPosition: 'left',
               style: {
                 backgroundColor: '#12e81d',
                 border: "2px solid black" ,
                 borderStyle: "double",},
-              sourcePosition: 'right',  data: { label: "Output", output: true }}
+              sourcePosition: 'right',  data: { label: text, output: true }}
           }
           return node;
         })

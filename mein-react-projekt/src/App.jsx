@@ -342,13 +342,18 @@ function App() {
                           value={inputAlphabet}
                           onInput={(e) => {handleAlphabetInput(e)}}
                       />
+                  </div>
                       <div>Aktuelle Konfiguration:</div>
-
                       <div className="alphabet">{`Σ = {${alphabet.join(', ')}}`}</div>
+                      <div className="zustände">{`Z = {${nodes.map((node) => node.data.label).join(",  ")}}`}</div>
+                          <div className="zustände">
+                              {`E = {${nodes.filter((node) => node.data.output).map((node) => node.data.label).join(", ")}}`}
+                          </div>
+
                       <NodeLabelList nodes={nodes} edges = {edges}/>
 
 
-                  </div>
+
 
           </div>
         <ReactFlow

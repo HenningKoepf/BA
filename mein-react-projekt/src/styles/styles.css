@@ -171,6 +171,11 @@ Dicker Rand für Endzustand
   font-family: monospace; /* Für eine bessere Darstellung von Mengenklammern */
   margin-top: 5px;
 }
+.Kontrollcontainer .zustände {
+  font-family: monospace; /* Für eine bessere Darstellung von Mengenklammern */
+  margin-top: 5px;
+  font-weight: bold;
+}
 
 .Kontrollcontainer button {
   background-color: #007bff;
