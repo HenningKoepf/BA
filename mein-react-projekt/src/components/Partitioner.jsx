@@ -23,74 +23,35 @@ function findTargetState(node, symbol, edges) {
     return edge ? edge.target : null;
 }
 
+/**
+ * Durchläuft alle Partitionen, um die zu finden, die den Zielzustand enthält
+ * @param targetLabel
+ * @param partitions
+ * @returns {*}
+ */
+
 function findPartitionForState(targetLabel, partitions) {
-    // Durchläuft alle Partitionen, um die zu finden, die den Zielzustand enthält
     return partitions.find(partition => partition.some(node => node.data.label === targetLabel));
 }
 
+/**
+ * Ausgabeformatierung der Partitionen
+ * @param partitions
+ * @returns {*}
+ */
 const formatPartitions = (partitions) => {
     return partitions.map(partition =>
         partition.map(node => node.data.label).join(' ')
     ).join(' | ');
 };
 
-function refinePartitions(nodes, edges, alphabet) {
-    let partitions = initialPartition(nodes);
-
-    let newPartitions = [];
-
-    partitions.forEach(partition => {
-        let partitionMap = new Map();
-
-        partition.forEach(node => {
-            // Sammle alle Übergänge für die aktuelle Node
-            let symbolsForNode = new Set();
-            edges.forEach(edge => {
-                if (edge.source === node.data.label) {
-                    edge.label.split(/[\s,;]+/).forEach(symbol => symbolsForNode.add(symbol));
-                }
-            });
-            console.log(node.data.label);
-            console.log(symbolsForNode);
-
-            symbolsForNode.forEach(symbol => {
-                const target = findTargetState(node, symbol, edges);
-                console.log('Knoten ' + node.data.label + ' mit Übergang: ' + symbol + "zu: " + target );
-                const targetPartition = findPartitionForState(target, partitions);
-                const partitionKey = targetPartition
-                    ? targetPartition.map(n => n.label).sort().join(',')
-                    : 'Müllzustand';
-
-                if (!partitionMap.has(partitionKey)) {
-                    partitionMap.set(partitionKey, []);
-                }
-                partitionMap.get(partitionKey).push(node);
-            });
-        });
-
-
-        partitionMap.forEach(subPartition => {
-            newPartitions.push(subPartition);
-
-        });
-
-    });
-
-    partitions = newPartitions;
-    console.log(partitions);
-
-    //cheating on the formatting
-    partitions = partitions.map(partition => {
-        const uniqueNodes = Array.from(new Set(partition.map(node => node.data.label)))
-            .map(label => partition.find(node => node.data.label === label));
-        return uniqueNodes;
-    });
-
-    return partitions;
-}
-
-/*
-
+/**
+ * Hier findet die eigentliche Logik der Partitionstabelle statt
+ * @param nodes
+ * @param edges
+ * @param alphabet
+ * @returns {[*,*]}
+ */
 function refinePartitions(nodes, edges, alphabet) {
     // Initialisiere Partitionen mit Endzuständen und Nicht-Endzuständen
     let partitions = initialPartition(nodes);
@@ -101,26 +62,29 @@ function refinePartitions(nodes, edges, alphabet) {
         let newPartitions = [];
 
         partitions.forEach(partition => {
-            let partitionMap = new Map(); // Map, um Knoten nach Zielpartitionen zu gruppieren
+            let partitionMap = new Map();
 
             partition.forEach(node => {
-                alphabet.forEach(symbol => {
-                    //wohin geht der Übergang
-                    const target = findTargetState(node, symbol, edges);
-                    //liegt das Ziel in eienr andreen Partition, wenn ja , welche
-                    const targetPartition = findPartitionForState(target, partitions);
+                // Sammle alle Übergänge für die aktuelle Node
+                let symbolsForNode = new Set();
+                edges.forEach(edge => {
+                    if (edge.source === node.data.label) {
+                        edge.label.split(/[\s,;]+/).forEach(symbol => symbolsForNode.add(symbol));
+                    }
+                });
+                console.log(node.data.label);
+                console.log(symbolsForNode);
 
+                symbolsForNode.forEach(symbol => {
+                    const target = findTargetState(node, symbol, edges);
+                    console.log('Knoten ' + node.data.label + ' mit Übergang: ' + symbol + "zu: " + target );
+                    const targetPartition = findPartitionForState(target, partitions);
                     const partitionKey = targetPartition
                         ? targetPartition.map(n => n.label).sort().join(',')
                         : 'Müllzustand';
 
-
-                  //  const partitionKey = targetPartition.map(n => n.label).sort().join(',');
-
-
                     if (!partitionMap.has(partitionKey)) {
                         partitionMap.set(partitionKey, []);
-
                     }
                     partitionMap.get(partitionKey).push(node);
                 });
@@ -129,6 +93,7 @@ function refinePartitions(nodes, edges, alphabet) {
             if (partitionMap.size > 1) {
                 changed = true;
             }
+
             partitionMap.forEach(subPartition => {
                 newPartitions.push(subPartition);
             });
@@ -139,7 +104,6 @@ function refinePartitions(nodes, edges, alphabet) {
 
     return partitions;
 }
-*/
 
 
 const Partitioner = ({ isDfaResult, nodes, edges, alphabet }) => {
