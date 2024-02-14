@@ -323,6 +323,12 @@ function App() {
         const newAlphabet = inputValue.split(/[;,]\s*|\s+/).map(symbol => symbol.trim()).filter((symbol, index, array) => array.indexOf(symbol) === index);
         setAlphabet(newAlphabet);
     };
+    const handlePartitionerClick = () =>{
+
+        setIsDfaResult((prev) => null);
+        const result = isDFA(nodes, edges, alphabet);
+        setIsDfaResult(result);
+    }
 
 
     return (
@@ -357,7 +363,8 @@ function App() {
                           </div>
 
                       <NodeLabelList nodes={nodes} edges = {edges}/>
-                  <DfaMinimizerComponent isDfaResult={isDfaResult} nodes={nodes} edges = {edges} symbols ={alphabet} />
+
+                  <button onClick={checkIsDFA}>Partitioniere!</button>
                   <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges} alphabet ={alphabet} />
 
           </div>

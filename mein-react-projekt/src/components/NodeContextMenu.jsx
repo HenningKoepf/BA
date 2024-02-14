@@ -121,12 +121,18 @@ export default function NodeContextMenu({
             if (node.id === id) {
               return {
                 ...node,
+                id: newLabel,
                 data: {
                   ...node.data,
                   label: newLabel,
                 },
               };
             }
+            //die "alte Node" muss aus dem DOM entfernt werden
+            //TODO, die neuen Edges nach den vorgaben der "alten" neu entstehen lassen
+            setNodes((nodes) => nodes.filter((node) => node.id !== id));
+            setEdges((edges) => edges.filter((edge) => edge.source !== id));
+            setEdges((edges) => edges.filter((edge) => edge.target !== id));
             return node;
           })
       );
