@@ -7,16 +7,37 @@ import React from 'react';
  * @constructor
  */
 
-const NodeLabelList = ({ nodes }) => {
 
-    const nodeLabels = nodes.map((node) => node.data.label);
+const NodeLabelList = ({ nodes, edges }) => {
+    //pro Knoten die ausgehenden Edges, deren Labels und die Labels der jeweiligen Zielknoten sammeln
+
+    const findEdgesAndTargetNodeLabels = (nodeId) => {
+        return edges
+            .filter(edge => edge.source === nodeId)
+            .map(edge => {
+                // Label des Zielknotens
+                const targetNodeLabel = nodes.find(node => node.id === edge.target)?.data.label || 'Unbekannt';
+                // Gib Label der Edge und das Label des Zielknotens zurück
+                return { edgeLabel: edge.label, targetNodeLabel };
+            });
+    };
 
     return (
         <div>
-            <h3>Zustände:</h3>
-            <ul>
-                {nodeLabels.map((label, index) => (
-                    <li key={index}>{label}</li>
+            <h3 className="header">Zustände und Übergänge:</h3>
+            <ul className="nodeList">
+                {nodes.map((node, index) => (
+                    <li key={index} className="nodeItem">
+                        {node.data.label}
+
+                        <ul className="edgeList">
+                            {findEdgesAndTargetNodeLabels(node.id).map((edgeInfo, edgeIndex) => (
+                                <li key={edgeIndex} className="edgeItem">
+                                             {edgeInfo.edgeLabel} --> {edgeInfo.targetNodeLabel}
+                                </li>
+                            ))}
+                        </ul>
+                    </li>
                 ))}
             </ul>
         </div>

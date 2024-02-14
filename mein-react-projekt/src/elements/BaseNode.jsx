@@ -3,9 +3,10 @@ import ReactFlow, { useReactFlow,} from 'reactflow';
 
 const BaseNode = ({ data }) => {
     const { setNodes } = useReactFlow();
+    const className = data.output ? "outputNode" : "basenode";
     return(
         <>
-        <div className = {"basenode"} >
+        <div className = {className} >
             {data.label}
         </div>
         </>

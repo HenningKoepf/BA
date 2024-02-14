@@ -215,7 +215,7 @@ function App() {
         }
 
         // Gibt es genau einen Startzustand
-        const startStates = nodes.filter(node => node.type === 'input');
+        const startStates = nodes.filter(node => node.data.input == true);
         if (startStates.length !== 1) {
             console.error("Es muss genau einen Startzustand geben.");
             alert("Startzustand ist nicht eindeutig");
@@ -327,6 +327,13 @@ function App() {
           style={{ width: '100vw', height: '60vw' }}>
 
               <div className="Kontrollcontainer" ref={kontrollContainerRef}>
+
+              <div className="DFAContainer">
+                  <button onClick={checkIsDFA}>Ist das ein DFA?</button>
+                  <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
+                      {isDfaResult !== null && (<div>{isDfaResult ? 'Ja' : 'Nein'}</div>)}
+                  </div>
+              </div>
                   <legend><strong>Eingabe: </strong></legend>
                   <div>
                       <label>Alphabet bearbeiten:</label>
@@ -338,17 +345,11 @@ function App() {
                       <div>Aktuelle Konfiguration:</div>
 
                       <div className="alphabet">{`Σ = {${alphabet.join(', ')}}`}</div>
-                      <div className="nodes">{`Zustände`}</div>
-                      <NodeLabelList nodes={nodes} />
-                      <div className="edges">{`Übergänge`}</div>
+                      <NodeLabelList nodes={nodes} edges = {edges}/>
+
 
                   </div>
-              <div className="DFAContainer">
-                  <button onClick={checkIsDFA}>Ist das ein DFA?</button>
-                  <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
-                         {isDfaResult !== null && (<div>{isDfaResult ? 'Ja' : 'Nein'}</div>)}
-                  </div>
-              </div>
+
           </div>
         <ReactFlow
             ref={ref}

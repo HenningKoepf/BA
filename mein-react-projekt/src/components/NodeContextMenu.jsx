@@ -30,13 +30,14 @@ export default function NodeContextMenu({
   const deleteNode = useCallback(() => {
     setNodes((nodes) => nodes.filter((node) => node.id !== id));
     setEdges((edges) => edges.filter((edge) => edge.source !== id));
+    setEdges((edges) => edges.filter((edge) => edge.target !== id));
   }, [id, setNodes, setEdges]);
 
   const changeToInputNode = useCallback(() => {
     setNodes((nodes) =>
         nodes.map((node) => {
           if (node.id === id){
-            return {...node,  style: {backgroundColor: '#1ec212'},type : 'input'}
+            return {...node,  data: {...node.data, input: true} ,style: {backgroundColor: '#1ec212'},}
           }
           return node;
         })
@@ -47,13 +48,17 @@ export default function NodeContextMenu({
     setNodes((nodes) =>
         nodes.map((node) => {
           if (node.id === id){
-            return {...node,  style: {backgroundColor: '#9c12c2'},targetPosition: 'left',
-              sourcePosition: 'right'}
+            return {...node ,targetPosition: 'left',
+              style: {
+                backgroundColor: '#12e81d',
+                border: "2px solid black" ,
+                borderStyle: "double",},
+              sourcePosition: 'right',  data: { label: "Output", output: true }}
           }
           return node;
         })
     );
-  }, [id, setNodes]);
+  }, [id, setNodes, getNode, addNodes]);
 
 
   const colorNode = useCallback(() => {
