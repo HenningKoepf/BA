@@ -19,7 +19,11 @@ import NodeContextMenu from './components/NodeContextMenu';
 import EdgeContextMenu from './components/EdgeContextMenu';
 import SelfConnectingEdge from './elements/SelfConnectingEdge';
 import BaseNode from './elements/BaseNode';
-import { initialNodes, initialEdges } from './elements/initial-setup';
+
+//import { initialNodes, initialEdges } from './elements/initial-setup';
+import { initialNodes, initialEdges } from './elements/initial-setup2';
+import DfaMinimizerComponent from './components/Minimizer';
+import Partitioner from './components/Partitioner';
 
 import Inputform from './components/Inputform';
 
@@ -53,6 +57,9 @@ function App() {
 
     const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
     const {partitions, setPartitions} = useState(null);
+
+
+
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
      * @type {{current: (unknown|null)}}
@@ -318,8 +325,6 @@ function App() {
     };
 
 
-
-
     return (
       <>
      <div className="toptext" ref={topTextRef} >D F A ---  M I N I M I E R E R ! </div>
@@ -352,9 +357,8 @@ function App() {
                           </div>
 
                       <NodeLabelList nodes={nodes} edges = {edges}/>
-
-
-
+                  <DfaMinimizerComponent isDfaResult={isDfaResult} nodes={nodes} edges = {edges} symbols ={alphabet} />
+                  <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges} alphabet ={alphabet} />
 
           </div>
         <ReactFlow
@@ -378,7 +382,7 @@ function App() {
             {edgemenu && <EdgeContextMenu onClick={onPaneClick} {...edgemenu} />}
         </ReactFlow>
 
-      </div>
+          </div>
           <footer>
               <p><strong>&copy; 2024 Henning Köpf</strong> - <strong>Kontakt:</strong> ************@gmx.de</p>
           </footer>
