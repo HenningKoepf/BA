@@ -86,6 +86,7 @@ function refinePartitions(nodes, edges, alphabet) {
                     if (!partitionMap.has(partitionKey)) {
                         partitionMap.set(partitionKey, []);
                     }
+                    //evtl direkt bei den nodes partitionieren, benefit für späteres ansteuern bei GUI
                     partitionMap.get(partitionKey).push(node);
                 });
             });
@@ -107,12 +108,11 @@ function refinePartitions(nodes, edges, alphabet) {
 
 
 const Partitioner = ({ isDfaResult, nodes, edges, alphabet }) => {
-// wenn der DFA kein DFA ist, dann wird auch nix minimiert, State kommt direkt aus der App.jsx
+// wenn der DFA kein DFA ist, dann wird auch nix minimiert, State kommt direkt als prop
 if (isDfaResult != true){
     return <p>Der Automat ist kein DFA und kann nicht minimiert werden. </p>;
 }
 else{
-    //cheated on the formatting
 
     const formattedPartitions = formatPartitions(refinePartitions(nodes,edges, alphabet));
     return (
