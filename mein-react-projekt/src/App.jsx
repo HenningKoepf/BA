@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -35,7 +35,7 @@ import NewNodeButton from './buttonfunctions';
 import NodeLabelList from './components/NodeLabelList';
 
 const EdgeTypes = {
-    buttonedge: ButtonEdge,
+    //buttonedge: ButtonEdge,
     selfconnecting: SelfConnectingEdge,
 };
 
@@ -49,16 +49,28 @@ function App() {
     //State Listener
     const [edgemenu, setEdgeMenu] = useState(null);
     const [menu, setMenu] = useState(null);
-    const [nodeBg, setNodeBg] = useState('#eee');
+    //const [nodeBg, setNodeBg] = useState('#eee');
     const [isDfaResult, setIsDfaResult, onChange] = useState(null);
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
     const [alphabet, setAlphabet] = useState(['a', 'b', 'c']);
-    const {partitions, setPartitions} = useState(null);
 
 
+
+    const initialPartition = (nodes) => {
+        const endStates = nodes.filter(node => node.data.output);
+        const nonEndStates = nodes.filter(node => !node.data.output);
+        return [nonEndStates, endStates];
+    };
+    const [partitions, setPartitions] = useState(initialPartition(nodes));
+
+    //Wenn der Automat geändert wird, werden die Partitionen initialisiert.
+    useEffect(() => {
+        const updatedPartitions = initialPartition(nodes);
+        setPartitions(updatedPartitions);
+    }, [nodes, setPartitions, edges]);
 
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
@@ -330,6 +342,10 @@ function App() {
         setIsDfaResult(result);
     }
 
+    const resetPage = () =>{
+        window.location.reload();
+    }
+
 
     return (
       <>
@@ -340,7 +356,8 @@ function App() {
 
               <div className="Kontrollcontainer" ref={kontrollContainerRef}>
 
-              <div className="DFAContainer">
+                  <button onClick={resetPage}> Reset </button>
+                  <div className="DFAContainer">
                   <button onClick={checkIsDFA}>Ist das ein DFA?</button>
                   <div className={`DFAAnzeige ${isDfaResult !== null ? (isDfaResult ? 'true' : 'false') : ''}`}>
                       {isDfaResult !== null && (<div>{isDfaResult ? 'Ja' : 'Nein'}</div>)}
@@ -365,8 +382,10 @@ function App() {
                       <NodeLabelList nodes={nodes} edges = {edges}/>
 
                   <button onClick={checkIsDFA}>Partitioniere!</button>
-                  <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges} alphabet ={alphabet} />
-
+                  <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges}
+                               alphabet ={alphabet} partitions={partitions}
+                               setPartitions= {setPartitions}
+                  />
           </div>
         <ReactFlow
             ref={ref}

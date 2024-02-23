@@ -40,10 +40,11 @@ export default function NodeContextMenu({
       y: node.position.y + 50,
 
     };
+    const newNodeLabel = node.data.label.concat("0");
 
-    addNodes({ ...node, id: `${node.id}-copy`, position,
-      handlerId: newHandlerId});
-  }, [id, getNode, addNodes, newHandlerId]);
+    //addNodes({ ...node, id: `${node.id}-copy`, position});
+    addNodes({ ...node,id: newNodeLabel, position, data:{...node.data, label: newNodeLabel}});
+  }, [id, getNode, addNodes]);
 
   /**
    * Knoten wird entfernt und jegliche damit zusammenhzängende Kanten werden aus dem DOM gelöscht
@@ -110,34 +111,24 @@ export default function NodeContextMenu({
    * @type {(function(): void)|*}
    */
   const renameNode = useCallback(() => {
-    /*
-    TODO Inputform statt window.promt
-*/
     const newLabel = window.prompt("Geben Sie den neuen Namen für den Knoten ein:", "");
+    if (newLabel && newLabel.trim() !== "") {
+      // Map auf alle knoten, einen neuen zrück
+      setNodes((prevNodes) =>
+          prevNodes.map((node) => node.id === id ? { ...node, id: newLabel, data: { ...node.data, label: newLabel } } : node)
+      );
 
-    if (newLabel !== null) {
-      setNodes((nodes) =>
-          nodes.map((node) => {
-            if (node.id === id) {
-              return {
-                ...node,
-                id: newLabel,
-                data: {
-                  ...node.data,
-                  label: newLabel,
-                },
-              };
-            }
-            //die "alte Node" muss aus dem DOM entfernt werden
-            //TODO, die neuen Edges nach den vorgaben der "alten" neu entstehen lassen
-            setNodes((nodes) => nodes.filter((node) => node.id !== id));
-            setEdges((edges) => edges.filter((edge) => edge.source !== id));
-            setEdges((edges) => edges.filter((edge) => edge.target !== id));
-            return node;
-          })
+      // Aktualisiere die Kanten, um die neue Knoten-ID zu reffen
+      setEdges((prevEdges) =>
+          prevEdges.map((edge) => ({
+            ...edge,
+            source: edge.source === id ? newLabel : edge.source,
+            target: edge.target === id ? newLabel : edge.target,
+          }))
       );
     }
-  }, [id, setNodes]);
+  }, [id, setNodes, setEdges]);
+
 
   return (
     <div

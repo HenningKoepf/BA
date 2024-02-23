@@ -58,28 +58,28 @@ export const initialNodes: Node[] = [
 export const initialEdges: Edge[] = [
 
     {
-        id: 'edge-1-2',
+        id: 'edge-Z1-Z2',
         source: 'Z1',
         target: 'Z2',
         label: 'a',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
-        id: 'edge-1-3',
+        id: 'edge-Z1-Z3',
         source: 'Z1',
         target: 'Z3',
         label: 'b',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
-        id: 'edge-3-5',
+        id: 'edge-Z3-Z5',
         source: 'Z3',
         target: 'Z5',
         label: 'a, b',
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
-        id: 'edge-2-6',
+        id: 'edge-Z2-Z6',
         source: 'Z2',
         target: 'Z6',
         label: 'a, b',
@@ -94,7 +94,7 @@ export const initialEdges: Edge[] = [
         markerEnd: { type: MarkerType.ArrowClosed },
     },
     {
-        id: 'edge-self',
+        id: 'edge-Z6-Z6',
         label: 'a b' ,
         source: 'Z6',
         target: 'Z6',
