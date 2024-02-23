@@ -20,10 +20,10 @@ function findTargetState(node, symbol, edges) {
     // Durchsuche alle Kanten, um Übereinstimmungen mit dem Symbol zu finden
     const edge = edges.find(edge => {
         const übergänge = edge.label.split(/[\s,;]+/); // Splitte das Label der Kante
-        console.log("Found Target Sate for :" + node.data.label + " mit " + symbol + " zu " + edge.target );
+
         return edge.source === node.data.label && übergänge.includes(symbol); // Sicherstellen, ob die Quelle und das Symbol übereinstimmen
     });
-
+    console.log("Found Target Sate for :" + node.data.label + " mit " + symbol + " zu " + edge.target );
     return edge ? edge.target : null;
 }
 
@@ -232,3 +232,77 @@ else{
 }
 
 export default Partitioner;
+
+
+ /*
+
+ //Vl doch eher die Version mit zuerst die Idee,
+  über alle Partitionen zu iterieren, für jede Partition die Übergangssymbole zu sammeln und
+   dann zu prüfen, ob alle Zustände, die bei einem bestimmten Symbol zu einem Zielzustand übergehen,
+    in die gleiche Partition übergehen.
+    Falls ein Zielzustand nicht gefunden wird (Müllzustand),
+    sollte dies nicht automatisch zur Erstellung einer neuen Partition führen.
+ function minimizeDFA(states, edges, partitions) {
+    let changed = true;
+    while (changed) {
+        changed = false;
+        let newPartitions = [];
+
+        partitions.forEach(partition => {
+            // Sammle alle Symbole, die in dieser Partition vorkommen
+            let symbols = new Set();
+            partition.forEach(state => {
+                edges.forEach(edge => {
+                    if (edge.source === state.id) {
+                        edge.label.split(/[\s,;]+/).forEach(symbol => symbols.add(symbol));
+                    }
+                });
+            });
+
+            // Überprüfe für jedes Symbol, ob die Zustände in der Partition konsistent sind
+            symbols.forEach(symbol => {
+                let targetPartitionsMap = new Map();
+                partition.forEach(state => {
+                    const target = findTargetState(state, symbol, edges);
+                    if (target !== null) { // Ignoriere Müllzustände
+                        const targetPartition = findPartitionForState(target, partitions);
+                        if (targetPartitionsMap.has(targetPartition)) {
+                            targetPartitionsMap.get(targetPartition).push(state);
+                        } else {
+                            targetPartitionsMap.set(targetPartition, [state]);
+                        }
+                    }
+                });
+
+                // Wenn mehr als eine Ziel-Partition existiert, müssen wir eine neue Partition erstellen
+                if (targetPartitionsMap.size > 1) {
+                    targetPartitionsMap.forEach((partitionStates) => {
+                        newPartitions.push(partitionStates);
+                    });
+                    changed = true;
+                } else {
+                    // Alle Zustände führen zu derselben Partition, also behalten wir die aktuelle Partition bei
+                    newPartitions.push(partition);
+                }
+            });
+        });
+
+        if (changed) {
+            partitions = newPartitions;
+        }
+    }
+
+    return partitions;
+}
+
+function findTargetState(state, symbol, edges) {
+    // Findet den Zielzustand für einen gegebenen Zustand und ein Symbol
+    // Diese Funktion bleibt unverändert
+}
+
+function findPartitionForState(target, partitions) {
+    // Findet die Partition, zu der ein Zustand gehört
+    // Diese Funktion bleibt unverändert
+}
+
+  */
