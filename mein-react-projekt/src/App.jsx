@@ -454,7 +454,7 @@ function App() {
                       />
                   <div className="partitionen">
                       {partitions.map((partition, index) =>
-                          partition.map(node => node.data.label).join(", ") + (index < partitions.length - 1 ? " | " : "")
+                          partition.map(node => node.data.label).join("  ") + (index < partitions.length - 1 ? " | " : "")
                       )}
                   </div>
 

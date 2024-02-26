@@ -166,6 +166,7 @@ function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
                 symbolsForNode.forEach(symbol => {
                     console.log("for each transition");
                     const target = findTargetState(node, symbol, edges);
+
                     const targetPartition = findPartitionForState(target, partitions);
                     const partitionKey = targetPartition
                         ? targetPartition.map(n => n.data.label).sort().join(',')
@@ -241,11 +242,8 @@ else{
 
 }
  */
-const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions }) => {
-    // Neuer Zustand, um die Berechnung zu kontrollieren
-    const [triggerCalculation, setTriggerCalculation] = useState(false);
+const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions,triggerCalculation, setTriggerCalculation }) => {
 
-    // Diese Funktion wird aufgerufen, wenn der Benutzer auf den Button klickt
     const handleCalculateClick = () => {
         setTriggerCalculation(true); // Setzt den Trigger für die Berechnung
     };
@@ -253,17 +251,21 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
     useEffect(() => {
         if (triggerCalculation) {
             if (isDfaResult) {
-                // Führen Sie hier Ihre Berechnungslogik durch
+
                 const refinedPartitions = refinePartitions(nodes, edges, alphabet, partitions);
                 setPartitions(refinedPartitions); // Aktualisiert die Partitionen im übergeordneten Zustand
             }
-            setTriggerCalculation(false); // Setzt den Trigger zurück, damit die Berechnung nicht wiederholt wird
+            setTriggerCalculation(false); //keine erneute berechnung bei
         }
     }, [triggerCalculation]);
 
     if (isDfaResult !== true) {
         <button onClick={handleCalculateClick}>Berechnung auslösen</button>
-        return <p>Die DFA Prüfung ist nicht abgeschlossen</p>;
+        return
+        <p>
+            Die DFA Prüfung ist nicht abgeschlosse
+            Startpartitionen:
+        </p>;
     } else {
         return (
             <>
