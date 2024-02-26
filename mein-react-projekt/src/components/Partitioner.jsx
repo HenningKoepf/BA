@@ -202,6 +202,9 @@ function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
 
         // Aktualisiere partitions für den nächsten Durchlauf
        partitions = newPartitions;
+        if (partitions.length > 15){
+            changed = false;
+        }
 
     }
 
@@ -212,12 +215,15 @@ function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
 
 
 
-const Partitioner = ({ isDfaResult, nodes, edges, alphabet , partitions, setPartitions}) => {
+/*
+
+const Partitioner = ({ isDfaResult, nodes, edges, alphabet , partitions, setPartitions,triggerCalculation, resetTrigger }) => {
+
 
 // wenn der DFA kein DFA ist, dann wird auch nix minimiert, State kommt direkt als prop
 if (isDfaResult != true){
     return (
-        <p>Der Automat ist kein DFA </p>
+        <p>Prüfung auf DFA noch nicht abgeschlossen... </p>
     );
 
 }
@@ -232,7 +238,41 @@ else{
     );
 }
 
+
 }
+ */
+const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions }) => {
+    // Neuer Zustand, um die Berechnung zu kontrollieren
+    const [triggerCalculation, setTriggerCalculation] = useState(false);
+
+    // Diese Funktion wird aufgerufen, wenn der Benutzer auf den Button klickt
+    const handleCalculateClick = () => {
+        setTriggerCalculation(true); // Setzt den Trigger für die Berechnung
+    };
+
+    useEffect(() => {
+        if (triggerCalculation) {
+            if (isDfaResult) {
+                // Führen Sie hier Ihre Berechnungslogik durch
+                const refinedPartitions = refinePartitions(nodes, edges, alphabet, partitions);
+                setPartitions(refinedPartitions); // Aktualisiert die Partitionen im übergeordneten Zustand
+            }
+            setTriggerCalculation(false); // Setzt den Trigger zurück, damit die Berechnung nicht wiederholt wird
+        }
+    }, [triggerCalculation]);
+
+    if (isDfaResult !== true) {
+        <button onClick={handleCalculateClick}>Berechnung auslösen</button>
+        return <p>Die DFA Prüfung ist nicht abgeschlossen</p>;
+    } else {
+        return (
+            <>
+                <button onClick={handleCalculateClick}>Berechnung lösen</button>
+                <h2>Partitionen</h2>
+            </>
+        );
+    }
+};
 
 export default Partitioner;
 

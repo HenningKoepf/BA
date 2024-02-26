@@ -22,17 +22,9 @@ import BaseNode from './elements/BaseNode';
 
 //import { initialNodes, initialEdges } from './elements/initial-setup';
 import { initialNodes, initialEdges } from './elements/initial-setup2';
-import DfaMinimizerComponent from './components/Minimizer';
 import Partitioner from './components/Partitioner';
 import {findPartitionForState, findTargetState} from './components/Partitioner';
-
-import Inputform from './components/Inputform';
-
-
-
 import { data } from "./data/data";
-import ButtonEdge from './elements/ButtonEdge';
-import NewNodeButton from './buttonfunctions';
 import NodeLabelList from './components/NodeLabelList';
 
 const EdgeTypes = {
@@ -46,6 +38,7 @@ const NodeTypes = {
 
 
 function App() {
+
 
     //State Listener
     const [edgemenu, setEdgeMenu] = useState(null);
@@ -71,7 +64,7 @@ function App() {
     useEffect(() => {
         const updatedPartitions = initialPartition(nodes);
         setPartitions(updatedPartitions);
-    }, [nodes, setPartitions, edges]);
+    }, []);
 
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
@@ -136,7 +129,7 @@ function App() {
 
     const onConnect = useCallback(
         (params) => {
-            if ( params.source == params.target){
+            if ( params.source === params.target){
                 const newEdge = {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
@@ -389,16 +382,26 @@ function App() {
         setInputAlphabet(e.target.value);
         updateAlphabet(e.target.value);
     }
+    /**
+     * Inputbox und alphabet stimmen immer überein
+     * @param inputValue
+     */
     const updateAlphabet = (inputValue) => {
         const newAlphabet = inputValue.split(/[;,]\s*|\s+/).map(symbol => symbol.trim()).filter((symbol, index, array) => array.indexOf(symbol) === index);
         setAlphabet(newAlphabet);
     };
-    const handlePartitionerClick = () =>{
 
-        setIsDfaResult((prev) => null);
-        const result = isDFA(nodes, edges, alphabet);
-        setIsDfaResult(result);
-    }
+
+    /**
+     * neue partitioneung erzeugen
+     */
+    const [triggerCalculation, setTriggerCalculation] = useState(false);
+
+
+    const handlePartitionerClick = () => {
+        setTriggerCalculation(true);  // Dies löst die Berechnung aus
+    };
+
 
     const resetPage = () =>{
         window.location.reload();
@@ -439,11 +442,22 @@ function App() {
 
                       <NodeLabelList nodes={nodes} edges = {edges}/>
 
-                  <button onClick={handlePartitionerClick}>Partitioniere!</button>
-                  <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges}
-                               alphabet ={alphabet} partitions={partitions}
-                               setPartitions= {setPartitions}
-                  />
+                      <Partitioner
+                          isDfaResult={isDfaResult}
+                          nodes={nodes}
+                          edges={edges}
+                          alphabet={alphabet}
+                          partitions={partitions}
+                          setPartitions={setPartitions}
+                          triggerCalculation={triggerCalculation}
+                          setTriggerCalculation={setTriggerCalculation}
+                      />
+                  <div className="partitionen">
+                      {partitions.map((partition, index) =>
+                          partition.map(node => node.data.label).join(", ") + (index < partitions.length - 1 ? " | " : "")
+                      )}
+                  </div>
+
           </div>
         <ReactFlow
             ref={ref}
