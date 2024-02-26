@@ -24,6 +24,7 @@ import BaseNode from './elements/BaseNode';
 import { initialNodes, initialEdges } from './elements/initial-setup2';
 import DfaMinimizerComponent from './components/Minimizer';
 import Partitioner from './components/Partitioner';
+import {findPartitionForState, findTargetState} from './components/Partitioner';
 
 import Inputform from './components/Inputform';
 
@@ -140,7 +141,7 @@ function App() {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
                     target: params.target,
-                    label: alphabet[0] || "a",
+                    label: "a",
                     type: "selfconnecting",
                     markerEnd: { type: MarkerType.ArrowClosed },
                 };
@@ -152,7 +153,7 @@ function App() {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
                     target: params.target,
-                    label: alphabet[0] || "a",
+                    label:  "a",
                     type: "default",
                     markerEnd: { type: MarkerType.ArrowClosed },
                 };
@@ -324,6 +325,62 @@ function App() {
     }
 
     /**
+     * Erstmal die partitionierung mit einem einzigen Symbol
+     * @param partitions
+     * @param edges
+     * @param selectedEdge
+     * @returns {{partitions: *[], changed: boolean}}
+     */
+    function partitionDFAWithEdge(partitions, edges, selectedEdge) {
+        let newPartitions = [];
+        let changed = false;
+
+        // Finde das Übergangssymbol der ausgewählten Kante
+        const selectedSymbol = selectedEdge.label;
+
+        partitions.forEach(partition => {
+            let targetPartitionMap = new Map();
+
+            partition.forEach(node => {
+                // Prüfe, ob der aktuelle Knoten der Quellknoten der ausgewählten Kante ist
+                if (node.id === selectedEdge.source) {
+                    const target = findTargetState(node, selectedSymbol, edges);
+
+                    if (target !== null) { // Ignoriere Müllzustände
+                        const targetPartition = findPartitionForState(target, partitions);
+                        if (targetPartition) {
+                            let nodes = targetPartitionMap.get(targetPartition) || [];
+                            nodes.push(node);
+                            targetPartitionMap.set(targetPartition, nodes);
+                        }
+                    } else {
+                        // Behandle Knoten ohne gültigen Übergang für das Symbol separat
+                        let nodes = targetPartitionMap.get(null) || [];
+                        nodes.push(node);
+                        targetPartitionMap.set(null, nodes);
+                    }
+                } else {
+                    // Knoten, die nicht Quellknoten der ausgewählten Kante sind, bleiben unverändert
+                    let nodes = targetPartitionMap.get(partition) || [];
+                    nodes.push(node);
+                    targetPartitionMap.set(partition, nodes);
+                }
+            });
+
+            // Erstelle neue Partitionen basierend auf der Gruppierung
+            targetPartitionMap.forEach((nodes, _) => {
+                if (nodes.length < partition.length) {
+                    changed = true; // Die Partition wurde geändert
+                }
+                newPartitions.push(nodes);
+            });
+        });
+
+        // Gib die neuen Partitionen und das Änderungsflag zurück
+        return { partitions: newPartitions, changed };
+    }
+
+    /**
      * Aktualisieren des aktuell akzeptiereten Alphabets
      * @param newAlphabet
      */
@@ -382,7 +439,7 @@ function App() {
 
                       <NodeLabelList nodes={nodes} edges = {edges}/>
 
-                  <button onClick={checkIsDFA}>Partitioniere!</button>
+                  <button onClick={handlePartitionerClick}>Partitioniere!</button>
                   <Partitioner isDfaResult={isDfaResult} nodes={nodes} edges = {edges}
                                alphabet ={alphabet} partitions={partitions}
                                setPartitions= {setPartitions}

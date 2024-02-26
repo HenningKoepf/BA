@@ -28,7 +28,7 @@ export default function EdgeContextMenu({
         if (newLabel !== null) {
             setEdges((edges) =>
                 edges.map((edge) => {
-                    if (edge.id === id) { // Vergleich mit welcher ID?
+                    if (edge.id === id) {
                         return {
                             ...edge,
                                 label: newLabel,
@@ -52,9 +52,11 @@ export default function EdgeContextMenu({
             <p style={{ margin: '0.5em' }}>
                 <small>Edge: {id}</small>
             </p>
+            <button onClick ={deleteEdge}>später verknüpfen</button>
 
             <button onClick ={deleteEdge}>Kante Löschen</button>
             <button onClick ={renameEdge}>Umbenennen</button>
+
 
         </div>
     );

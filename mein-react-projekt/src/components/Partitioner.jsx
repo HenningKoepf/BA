@@ -3,7 +3,7 @@ import { useReactFlow } from 'reactflow';
 
 
 
-const initialPartition = (nodes) => {
+export const initialPartition = (nodes) => {
     const endStates = nodes.filter(node => node.data.output);
     const nonEndStates = nodes.filter(node => !node.data.output);
     return [nonEndStates, endStates];
@@ -16,7 +16,7 @@ const initialPartition = (nodes) => {
  * @param edges
  * @returns {*|null}
  */
-function findTargetState(node, symbol, edges) {
+export function findTargetState(node, symbol, edges) {
     // Durchsuche alle Kanten, um Übereinstimmungen mit dem Symbol zu finden
     const edge = edges.find(edge => {
         const übergänge = edge.label.split(/[\s,;]+/); // Splitte das Label der Kante
@@ -33,7 +33,7 @@ function findTargetState(node, symbol, edges) {
  * @param partitions
  * @returns {*}
  */
-function findPartitionForState(targetLabel, partitions) {
+export function findPartitionForState(targetLabel, partitions) {
     console.log("Suche nach:", targetLabel);
     return partitions.find(partition => {
         console.log("Partition:", partition.map(node => node.data.label));
@@ -216,14 +216,17 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet , partitions, setPart
 
 // wenn der DFA kein DFA ist, dann wird auch nix minimiert, State kommt direkt als prop
 if (isDfaResult != true){
-    return <p>Der Automat ist kein DFA und kann nicht minimiert werden. </p>;
+    return (
+        <p>Der Automat ist kein DFA </p>
+    );
+
 }
 else{
     const refinedPartitions = refinePartitions(nodes,edges, alphabet, partitions, setPartitions);
     const formattedPartitions = formatPartitions(refinedPartitions);
     return (
         <>
-            <h2>DFA Partitionen</h2>
+            <h2>Partitionen</h2>
             <p>{formattedPartitions}</p>
         </>
     );
@@ -232,6 +235,7 @@ else{
 }
 
 export default Partitioner;
+
 
 
  /*
