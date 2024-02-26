@@ -111,7 +111,8 @@ function App() {
                 const topText = topTextRef.current.getBoundingClientRect();
                 const topTextHeight = topText.height;
 
-                const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 200); // Begrenze die linke Position entsprechend der Breite des .Kontrollcontainer
+                const left = Math.min(clickX- kontrollContainerWidth , pane.width - kontrollContainerWidth - 200);
+                // limit die linke Position mit Breite des Kontrollcontainer
                 const top = Math.min(clickY -topTextHeight, pane.height -topTextHeight - 200);
 
             setEdgeMenu({
@@ -139,7 +140,7 @@ function App() {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
                     target: params.target,
-                    label: "self", // Fügen Sie das Label dem Edge-Objekt hinzu
+                    label: alphabet[0] || "a",
                     type: "selfconnecting",
                     markerEnd: { type: MarkerType.ArrowClosed },
                 };
@@ -151,7 +152,7 @@ function App() {
                     id: `edge-${params.source}-${params.target}`,
                     source: params.source,
                     target: params.target,
-                    label: "a", // Fügen Sie das Label dem Edge-Objekt hinzu
+                    label: alphabet[0] || "a",
                     type: "default",
                     markerEnd: { type: MarkerType.ArrowClosed },
                 };
