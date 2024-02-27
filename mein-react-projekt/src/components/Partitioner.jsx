@@ -173,7 +173,7 @@ function refinePartitions(partitions, edges, symbol) {
 
 
 
-const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions,triggerCalculation, setTriggerCalculation }) => {
+const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions,triggerCalculation, setTriggerCalculation, setPartitionsHistory, partitionHistory }) => {
 
 
     const handleCalculateClick = () => {
@@ -193,7 +193,7 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
                     // Warten Sie, bis die refinePartitions-Funktion die Partitionen für das aktuelle Symbol verfeinert hat
                     const refinedPartitions = await refinePartitions(currentPartitions, edges, symbol);
                     //Historylogg
-                    history.push({symbol, partitions: refinedPartitions});
+                    history.push({symbol: symbol, partitions: refinedPartitions});
                     // Setzen Sie die Partitionen auf die verfeinerten Partitionen für das nächste Symbol
 
                     currentPartitions = refinedPartitions;
