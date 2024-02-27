@@ -276,3 +276,34 @@ Dicker Rand für Endzustand
   margin-bottom: 2px; /* Reduzierter Abstand */
 }
 
+.partition-history {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-entry {
+  display: flex;
+  align-items: center;
+}
+
+.partition-row {
+  display: flex;
+}
+
+.partition {
+  padding: 0 10px; /* Anpassen für Abstand zwischen Partitionen */
+  border-right: 1px solid black; /* Linie zwischen Partitionen */
+}
+
+.partition:last-child {
+  border-right: none;
+}
+
+.symbol {
+  padding-left: 10px; /* Abstand zwischen Partitionen und Symbol */
+  white-space: nowrap; /* Verhindert Zeilenumbruch bei Symbolen */
+}
+
+.step-number {
+  padding-right: 10px; /* Abstand vor der Schritt-Nummer */
+}

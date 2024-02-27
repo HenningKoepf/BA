@@ -408,6 +408,26 @@ function App() {
         window.location.reload();
     }
 
+    function renderPartitionWithSymbol(historyEntry) {
+        if (!historyEntry || !historyEntry.partition) {
+            // Wenn historyEntry oder historyEntry.partition undefined ist,
+            // gib eine Fehlermeldung zurück oder handle den Fall entsprechend.
+            return <div>Partitionsgeschichte ist nicht verfügbar.</div>;
+        }
+
+        return (
+            <div className="partition-with-symbol">
+                {historyEntry.partition.map((group, index) => (
+                    <span key={index}>
+          {group.join(" ")} {index < historyEntry.partition.length - 1 ? "| " : ""}
+        </span>
+                ))}
+                {historyEntry.symbol && <span className="symbol"> mit "{historyEntry.symbol}"</span>}
+            </div>
+        );
+    }
+
+
 
     return (
       <>
@@ -453,27 +473,17 @@ function App() {
                           triggerCalculation={triggerCalculation}
                           setTriggerCalculation={setTriggerCalculation}
                           partitionsHistory={partitionsHistory}
-                          setPartitionHistory={setPartitionsHistory}
+                          setPartitionsHistory={setPartitionsHistory}
                       />
                   <div className="partitionen">
                       {partitions.map((partition, index) =>
                           partition.map(node => node.data.label).join("  ") + (index < partitions.length - 1 ? " | " : "")
                       )}
                   </div>
-                  <div className="partitionHistory">
-                      {partitionsHistory.map((historyEntry, index) => (
-                          <div key={index}>
-                              <div>{`Schritt ${index + 1}: ${historyEntry.symbol}`}</div>
-                              <div>
-                                  {historyEntry.partitions.map((partition, pIndex) =>
-                                      partition.map(node => node.data.label).join("  ") + (pIndex < historyEntry.partitions.length - 1 ? " | " : "")
-                                  )}
-                              </div>
-                          </div>
-                      ))}
-                  </div>
+
 
           </div>
+
         <ReactFlow
             ref={ref}
             nodes={nodes}
@@ -494,8 +504,16 @@ function App() {
             {menu && <NodeContextMenu onClick={onPaneClick} {...menu} />}
             {edgemenu && <EdgeContextMenu onClick={onPaneClick} {...edgemenu} />}
         </ReactFlow>
-
           </div>
+          <div className="partition-history">
+              {partitionsHistory.map((historyEntry, index) => (
+                  <div key={index} className="history-entry">
+                      <div className="step-number">{index}.</div>
+                      {renderPartitionWithSymbol(historyEntry)}
+                  </div>
+              ))}
+          </div>
+
           <footer>
               <p><strong>&copy; 2024 Henning Köpf</strong> - <strong>Kontakt:</strong> ************@gmx.de</p>
           </footer>

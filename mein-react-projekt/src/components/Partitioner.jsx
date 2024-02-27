@@ -211,11 +211,7 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
 
     if (isDfaResult !== true) {
         <button onClick={handleCalculateClick}>Berechnung auslösen</button>
-        return
-        <p>
-            Die DFA Prüfung ist nicht abgeschlosse
-            Startpartitionen:
-        </p>;
+
     } else {
         return (
             <>
