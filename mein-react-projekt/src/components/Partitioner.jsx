@@ -17,15 +17,14 @@ export const initialPartition = (nodes) => {
  * @returns {*|null}
  */
 export function findTargetState(node, symbol, edges) {
-    // Durchsuche alle Kanten, um Übereinstimmungen mit dem Symbol zu finden
+    // Diese Funktion sucht nach dem Zielzustand für einen gegebenen Knoten und ein Symbol
     const edge = edges.find(edge => {
-        const übergänge = edge.label.split(/[\s,;]+/); // Splitte das Label der Kante
-
-        return edge.source === node.data.label && übergänge.includes(symbol); // Sicherstellen, ob die Quelle und das Symbol übereinstimmen
+        const symbols = edge.label.split(/[ ,]+/);
+        return edge.source === node.id && symbols.includes(symbol);
     });
-    console.log("Found Target Sate for :" + node.data.label + " mit " + symbol + " zu " + edge.target );
-    return edge.target  ;
+    return edge ? edge.target : null;
 }
+
 
 /**
  * Durchläuft alle Partitionen, um die Partition zu finden, die den Zielzustand der enthält
@@ -33,23 +32,16 @@ export function findTargetState(node, symbol, edges) {
  * @param partitions
  * @returns {*}
  */
-export function findPartitionForState(targetLabel, partitions) {
-    console.log("Suche nach:", targetLabel);
-    return partitions.find(partition => {
-        console.log("Partition:", partition.map(node => node.data.label));
-        return partition.some(node => {
-            const match = node.data.label === targetLabel;
-            console.log("Vergleiche:", node.data.label, targetLabel, "Übereinstimmung:", match);
-            return match;
-        });
-    });
-}
-/*
 
-function findPartitionForState(targetLabel, partitions) {
-    return partitions.find(partition => partition.some(node => node.data.label === targetLabel));
+export function findPartitionForState(target, partitions) {
+    // Diese Funktion findet die Partition, zu der ein Zustand gehört
+    for (const partition of partitions) {
+        if (partition.some(node => node.id === target)) {
+            return partition;
+        }
+    }
+    return null;
 }
- */
 
 /**
  * Ausgabeformatierung der Partitionen
@@ -141,126 +133,81 @@ function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
     return partitions;
 }
  */
- function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
-     //let partitions = initialPartition(nodes);
-    console.log("start refining partitions");
+function refinePartitions(partitions, edges, symbol) {
+    let newPartitions = [];
 
-    let changed = true;
-    while (changed) {
-        changed = false;
-        let newPartitions = [];
+    // Durchlaufe jede Partition
+    partitions.forEach(partition => {
+        let partitionMap = new Map();
 
-        partitions.forEach(partition => {
-            let partitionMap = new Map();
-            console.log("for each partition");
+        // Durchlaufe jeden Zustand in der aktuellen Partition
+        partition.forEach(node => {
+            // Finde den Zielzustand für den aktuellen Knoten und das spezifische Symbol
+            const target = findTargetState(node, symbol, edges);
 
-            partition.forEach(node => {
-                console.log("for each node")
-                let symbolsForNode = new Set();
-                edges.forEach(edge => {
-                    if (edge.source === node.id) {
-                        edge.label.split(/[\s,;]+/).forEach(symbol => symbolsForNode.add(symbol));
-                    }
-                });
+            // Finde die Partition, zu der der Zielzustand gehört
+            const targetPartition = target ? findPartitionForState(target, partitions) : null;
 
-                symbolsForNode.forEach(symbol => {
-                    const target = findTargetState(node, symbol, edges);
-                    if (target !== null) {
-                    console.log("168: "+ target + " SYMBOL: " + symbol);
+            // Schlüssel basierend auf dem Zielzustand und der Partition, Müllzustände sind wichtig und bekommen eigenen Key
+            let key = targetPartition ? partitions.indexOf(targetPartition).toString() : 'none';
 
-                        const targetPartition = findPartitionForState(target, partitions);
-                        console.log("targetpartition" + targetPartition);
-                        const partitionKey = targetPartition
-                            ? targetPartition.map(n => n.label).sort().join(',')
-                            : 'Müllzustand';
-
-                        if (!partitionMap.has(partitionKey)) {
-                            partitionMap.set(partitionKey, new Set());
-                        }
-                        partitionMap.get(partitionKey).add(node);
-                        console.log(node.data.label + " übergang: " + symbol);
-                    }
-                });
-            });
-
-            // Konvert Sets in Arrays,für newPartitions
-            partitionMap.forEach(subPartitionSet => {
-                //array zum
-                const subPartitionArray = Array.from(subPartitionSet);
-                newPartitions.push(subPartitionArray);
-            });
+            // Gruppiere Knoten basierend auf ihrem Zielzustand
+            if (!partitionMap.has(key)) {
+                partitionMap.set(key, []);
+            }
+            partitionMap.get(key).push(node);
         });
 
+        // Füge die neu gebildeten Partitionen der Liste der neuen Partitionen hinzu
+        partitionMap.forEach(group => {
+            if (group.length > 0) {
+                newPartitions.push(group);
+            }
+        });
+    });
 
-        // Überprüfen, ob sich die Anzahl der Partitionen geändert hat
-        const prevPartitionsLength = partitions.length;
-        if (prevPartitionsLength !== newPartitions.length) {
-            changed = true;
-        } else {
-            // Zusätzlich überprüfen, ob die Inhalte der Partitionen sich geändert haben
-            changed = !partitions.every((partition, index) => {
-                return partition.length === newPartitions[index].length &&
-                    partition.every((node, nodeIndex) => node === newPartitions[index][nodeIndex]);
-            });
-        }
-
-        // Aktualisiere partitions für den nächsten Durchlauf
-       partitions = newPartitions;
-        if (partitions.length > 15){
-            changed = false;
-        }
-
-    }
-
-    // Aktualisiere den globalen State nur nach Abschluss der Schleife
-
-    return partitions;
+    // Rückgabe der neu gebildeten Partitionen
+    return newPartitions;
 }
 
 
 
-/*
 
-const Partitioner = ({ isDfaResult, nodes, edges, alphabet , partitions, setPartitions,triggerCalculation, resetTrigger }) => {
-
-
-// wenn der DFA kein DFA ist, dann wird auch nix minimiert, State kommt direkt als prop
-if (isDfaResult != true){
-    return (
-        <p>Prüfung auf DFA noch nicht abgeschlossen... </p>
-    );
-
-}
-else{
-    const refinedPartitions = refinePartitions(nodes,edges, alphabet, partitions, setPartitions);
-    const formattedPartitions = formatPartitions(refinedPartitions);
-    return (
-        <>
-            <h2>Partitionen</h2>
-            <p>{formattedPartitions}</p>
-        </>
-    );
-}
-
-
-}
- */
 const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions,triggerCalculation, setTriggerCalculation }) => {
+
 
     const handleCalculateClick = () => {
         setTriggerCalculation(true); // Setzt den Trigger für die Berechnung
+
     };
 
     useEffect(() => {
-        if (triggerCalculation) {
-            if (isDfaResult) {
+        if (triggerCalculation && isDfaResult) {
 
-                const refinedPartitions = refinePartitions(nodes, edges, alphabet, partitions);
-                setPartitions(refinedPartitions); // Aktualisiert die Partitionen im übergeordneten Zustand
-            }
-            setTriggerCalculation(false); //keine erneute berechnung bei
+
+            const refineAllPartitions = async () => {
+                let currentPartitions = partitions; // Start mit den initialen Partitionen
+
+                let history = [{symbol: 'Start', partitions: currentPartitions}];
+                for (const symbol of alphabet) {
+                    // Warten Sie, bis die refinePartitions-Funktion die Partitionen für das aktuelle Symbol verfeinert hat
+                    const refinedPartitions = await refinePartitions(currentPartitions, edges, symbol);
+                    //Historylogg
+                    history.push({symbol, partitions: refinedPartitions});
+                    // Setzen Sie die Partitionen auf die verfeinerten Partitionen für das nächste Symbol
+
+                    currentPartitions = refinedPartitions;
+                }
+                // Aktualisieren Sie die Partitionen im Zustand nur einmal, nachdem alle Verfeinerungen abgeschlossen sind
+                setPartitions(currentPartitions);
+                setPartitionsHistory(history);
+            };
+
+            refineAllPartitions().catch(console.error);
+            setTriggerCalculation(false); // Setzen Sie den TriggerCalculation-Zustand zurück
         }
     }, [triggerCalculation]);
+
 
     if (isDfaResult !== true) {
         <button onClick={handleCalculateClick}>Berechnung auslösen</button>
@@ -281,77 +228,3 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
 
 export default Partitioner;
 
-
-
- /*
-
- //Vl doch eher die Version mit zuerst die Idee,
-  über alle Partitionen zu iterieren, für jede Partition die Übergangssymbole zu sammeln und
-   dann zu prüfen, ob alle Zustände, die bei einem bestimmten Symbol zu einem Zielzustand übergehen,
-    in die gleiche Partition übergehen.
-    Falls ein Zielzustand nicht gefunden wird (Müllzustand),
-    sollte dies nicht automatisch zur Erstellung einer neuen Partition führen.
- function minimizeDFA(states, edges, partitions) {
-    let changed = true;
-    while (changed) {
-        changed = false;
-        let newPartitions = [];
-
-        partitions.forEach(partition => {
-            // Sammle alle Symbole, die in dieser Partition vorkommen
-            let symbols = new Set();
-            partition.forEach(state => {
-                edges.forEach(edge => {
-                    if (edge.source === state.id) {
-                        edge.label.split(/[\s,;]+/).forEach(symbol => symbols.add(symbol));
-                    }
-                });
-            });
-
-            // Überprüfe für jedes Symbol, ob die Zustände in der Partition konsistent sind
-            symbols.forEach(symbol => {
-                let targetPartitionsMap = new Map();
-                partition.forEach(state => {
-                    const target = findTargetState(state, symbol, edges);
-                    if (target !== null) { // Ignoriere Müllzustände
-                        const targetPartition = findPartitionForState(target, partitions);
-                        if (targetPartitionsMap.has(targetPartition)) {
-                            targetPartitionsMap.get(targetPartition).push(state);
-                        } else {
-                            targetPartitionsMap.set(targetPartition, [state]);
-                        }
-                    }
-                });
-
-                // Wenn mehr als eine Ziel-Partition existiert, müssen wir eine neue Partition erstellen
-                if (targetPartitionsMap.size > 1) {
-                    targetPartitionsMap.forEach((partitionStates) => {
-                        newPartitions.push(partitionStates);
-                    });
-                    changed = true;
-                } else {
-                    // Alle Zustände führen zu derselben Partition, also behalten wir die aktuelle Partition bei
-                    newPartitions.push(partition);
-                }
-            });
-        });
-
-        if (changed) {
-            partitions = newPartitions;
-        }
-    }
-
-    return partitions;
-}
-
-function findTargetState(state, symbol, edges) {
-    // Findet den Zielzustand für einen gegebenen Zustand und ein Symbol
-    // Diese Funktion bleibt unverändert
-}
-
-function findPartitionForState(target, partitions) {
-    // Findet die Partition, zu der ein Zustand gehört
-    // Diese Funktion bleibt unverändert
-}
-
-  */

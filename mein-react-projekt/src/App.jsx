@@ -59,12 +59,13 @@ function App() {
         return [nonEndStates, endStates];
     };
     const [partitions, setPartitions] = useState(initialPartition(nodes));
+    const [partitionsHistory, setPartitionsHistory] = useState([]);
 
     //Wenn der Automat geändert wird, werden die Partitionen initialisiert.
     useEffect(() => {
         const updatedPartitions = initialPartition(nodes);
         setPartitions(updatedPartitions);
-    }, [nodes]);
+    }, [nodes, alphabet, edges]);
 
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren
@@ -451,11 +452,25 @@ function App() {
                           setPartitions={setPartitions}
                           triggerCalculation={triggerCalculation}
                           setTriggerCalculation={setTriggerCalculation}
+                          partitionsHistory={partitionsHistory}
+                          setPartitionHistory={setPartitionsHistory}
                       />
                   <div className="partitionen">
                       {partitions.map((partition, index) =>
                           partition.map(node => node.data.label).join("  ") + (index < partitions.length - 1 ? " | " : "")
                       )}
+                  </div>
+                  <div className="partitionHistory">
+                      {partitionsHistory.map((historyEntry, index) => (
+                          <div key={index}>
+                              <div>{`Schritt ${index + 1}: ${historyEntry.symbol}`}</div>
+                              <div>
+                                  {historyEntry.partitions.map((partition, pIndex) =>
+                                      partition.map(node => node.data.label).join("  ") + (pIndex < historyEntry.partitions.length - 1 ? " | " : "")
+                                  )}
+                              </div>
+                          </div>
+                      ))}
                   </div>
 
           </div>
