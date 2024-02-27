@@ -64,7 +64,7 @@ function App() {
     useEffect(() => {
         const updatedPartitions = initialPartition(nodes);
         setPartitions(updatedPartitions);
-    }, []);
+    }, [nodes]);
 
     /**
      * Refs für die einzelnen Komponenten, damit kan nich dynamisch auf die Größenänderungen reagieren

@@ -24,7 +24,7 @@ export function findTargetState(node, symbol, edges) {
         return edge.source === node.data.label && übergänge.includes(symbol); // Sicherstellen, ob die Quelle und das Symbol übereinstimmen
     });
     console.log("Found Target Sate for :" + node.data.label + " mit " + symbol + " zu " + edge.target );
-    return edge ? edge.target : null;
+    return edge.target  ;
 }
 
 /**
@@ -164,19 +164,22 @@ function refinePartitions(nodes, edges, alphabet, partitions, setPartitions) {
                 });
 
                 symbolsForNode.forEach(symbol => {
-                    console.log("for each transition");
                     const target = findTargetState(node, symbol, edges);
+                    if (target !== null) {
+                    console.log("168: "+ target + " SYMBOL: " + symbol);
 
-                    const targetPartition = findPartitionForState(target, partitions);
-                    const partitionKey = targetPartition
-                        ? targetPartition.map(n => n.data.label).sort().join(',')
-                        : 'Müllzustand';
+                        const targetPartition = findPartitionForState(target, partitions);
+                        console.log("targetpartition" + targetPartition);
+                        const partitionKey = targetPartition
+                            ? targetPartition.map(n => n.label).sort().join(',')
+                            : 'Müllzustand';
 
-                    if (!partitionMap.has(partitionKey)) {
-                        partitionMap.set(partitionKey, new Set());
+                        if (!partitionMap.has(partitionKey)) {
+                            partitionMap.set(partitionKey, new Set());
+                        }
+                        partitionMap.get(partitionKey).add(node);
+                        console.log(node.data.label + " übergang: " + symbol);
                     }
-                    partitionMap.get(partitionKey).add(node);
-                    console.log(node.data.label + " übergang: " + symbol);
                 });
             });
 
