@@ -175,7 +175,7 @@ function refinePartitions(partitions, edges, symbol) {
 
 const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setPartitions,triggerCalculation, setTriggerCalculation, setPartitionsHistory, partitionHistory }) => {
 
-
+    let history = [{symbol: 'Start', partitions: partitions}];
     const handleCalculateClick = () => {
         setTriggerCalculation(true); // Setzt den Trigger für die Berechnung
 
@@ -188,7 +188,7 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
             const refineAllPartitions = async () => {
                 let currentPartitions = partitions; // Start mit den initialen Partitionen
 
-                let history = [{symbol: 'Start', partitions: currentPartitions}];
+
                 for (const symbol of alphabet) {
                     // Warten Sie, bis die refinePartitions-Funktion die Partitionen für das aktuelle Symbol verfeinert hat
                     const refinedPartitions = await refinePartitions(currentPartitions, edges, symbol);
@@ -201,6 +201,7 @@ const Partitioner = ({ isDfaResult, nodes, edges, alphabet, partitions, setParti
                 // Aktualisieren Sie die Partitionen im Zustand nur einmal, nachdem alle Verfeinerungen abgeschlossen sind
                 setPartitions(currentPartitions);
                 setPartitionsHistory(history);
+                console.log(history);
             };
 
             refineAllPartitions().catch(console.error);

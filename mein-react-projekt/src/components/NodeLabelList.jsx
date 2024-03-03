@@ -17,7 +17,7 @@ const NodeLabelList = ({ nodes, edges }) => {
             .map(edge => {
                 // Label des Zielknotens
                 const targetNodeLabel = nodes.find(node => node.id === edge.target)?.data.label || 'Unbekannt';
-                // Gib Label der Edge und das Label des Zielknotens zurück
+                // Gibt Label der Edge und das Label des Zielknotens zurück
                 return { edgeLabel: edge.label, targetNodeLabel };
             });
     };

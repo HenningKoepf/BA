@@ -139,9 +139,9 @@ export default function NodeContextMenu({
       <p style={{ margin: '0.5em' }}>
         <small>node: {id}</small>
       </p>
-      <button onClick={duplicateNode}>Knoten verdoppeln </button>
-      <button onClick={deleteNode}>Knoten Löschen</button>
-      <button onClick ={renameNode}>Umbenennen</button>
+      <button onClick={duplicateNode}>Neuer Zustand </button>
+      <button onClick={deleteNode}>Zustand Löschen</button>
+      <button onClick ={renameNode}>Zustand Umbenennen</button>
       <button onClick={colorNode}>Einfärben</button>
       <button onClick = {changeToInputNode}>Zu Startzustand</button>
       <button onClick = {changeToOutputNode}>Zu Endzustand</button>
